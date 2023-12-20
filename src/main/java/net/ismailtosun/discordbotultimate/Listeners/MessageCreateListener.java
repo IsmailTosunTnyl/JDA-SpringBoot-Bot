@@ -1,4 +1,4 @@
-package net.ismailtosun.discordbotultimate;
+package net.ismailtosun.discordbotultimate.Listeners;
 
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
