@@ -16,7 +16,7 @@ public class BotConfiguration {
     @Value("${token}")
     private String token;
 
-
+    public static JDA jda;
     @Bean
     public JDA jda() {
 
@@ -25,7 +25,7 @@ public class BotConfiguration {
                 .addEventListeners(new MessageCreateListener(),
                                     new CommandManager(new PlayerManager()))
                 .build();
-
+        BotConfiguration.jda= jda;
         return jda;
         
     }

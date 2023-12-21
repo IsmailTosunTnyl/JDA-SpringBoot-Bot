@@ -7,9 +7,11 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.ismailtosun.discordbotultimate.AudioPlayer.GuildMusicManager;
+import net.ismailtosun.discordbotultimate.Configurators.BotConfiguration;
 
 import java.util.HashMap;
 import java.util.List;
@@ -58,15 +60,16 @@ public class PlayerManager {
                 if(!tracks.isEmpty()){
                     if (trackUrl.contains("list")) {
                         textChannel.sendMessage("Adding playlist to queue: " + audioPlaylist.getName()).queue();
-                        textChannel.sendMessage("Adding to queue: " + tracks.get(0).getInfo().title).queue();
+
                         for (AudioTrack track : tracks) {
                             musicManager.scheduler.queue(track);
                         }
                     }
                     else {
                         musicManager.scheduler.queue(tracks.get(0));
-                        textChannel.sendMessage("Adding to queue: " + tracks.get(0).getInfo().title).queue();
+
                     }
+                    textChannel.sendMessage("Adding to queue: " + tracks.get(0).getInfo().title).queue();
 
                 }
 
