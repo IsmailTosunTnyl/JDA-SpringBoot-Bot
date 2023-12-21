@@ -1,8 +1,9 @@
-package net.ismailtosun.discordbotultimate;
+package net.ismailtosun.discordbotultimate.AudioPlayer;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
-import net.ismailtosun.discordbotultimate.Listeners.TrackScheduler;
+import net.ismailtosun.discordbotultimate.AudioPlayer.AudioPlayerSendHandler;
+import net.ismailtosun.discordbotultimate.AudioPlayer.TrackScheduler;
 
 public class GuildMusicManager {
 

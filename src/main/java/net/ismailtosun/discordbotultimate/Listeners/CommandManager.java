@@ -1,31 +1,27 @@
 package net.ismailtosun.discordbotultimate.Listeners;
 
-import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
-import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
-import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
-import net.dv8tion.jda.api.entities.channel.unions.AudioChannelUnion;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
-import net.ismailtosun.discordbotultimate.PlayerManager;
-import org.jetbrains.annotations.NotNull;
+import net.ismailtosun.discordbotultimate.AudioPlayer.PlayerManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class CommandManager extends ListenerAdapter {
 
 
     private PlayerManager playerManager;
+
+
 
     public CommandManager(PlayerManager playerManager) {
         this.playerManager = playerManager;
@@ -59,7 +55,7 @@ public class CommandManager extends ListenerAdapter {
             event.reply("Joined " + channel.getName()).queue();
 
             // play the song
-            playerManager.loadAndPlay(event.getChannel().asTextChannel(), song);
+            playerManager.loadAndPlay(event.getChannel().asTextChannel(), getURI(song));
 
         }
         else if (event.getName().equals("next")) {
@@ -101,6 +97,14 @@ public class CommandManager extends ListenerAdapter {
         commands.add(Commands.slash("next", "Play next song"));
         event.getGuild().updateCommands().addCommands(commands).queue();
 
+    }
 
+    public  String getURI(String trackUrl) {
+        if (trackUrl.contains("http")) {
+            return trackUrl;
+        }
+        else {
+            return "ytsearch:" + trackUrl +"Official Audio";
+        }
     }
 }

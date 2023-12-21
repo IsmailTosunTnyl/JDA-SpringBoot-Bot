@@ -1,4 +1,4 @@
-package net.ismailtosun.discordbotultimate;
+package net.ismailtosun.discordbotultimate.AudioPlayer;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.track.playback.AudioFrame;

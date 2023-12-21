@@ -1,20 +1,18 @@
-package net.ismailtosun.discordbotultimate.Listeners;
-
+package net.ismailtosun.discordbotultimate.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
-import com.sedmelluq.discord.lavaplayer.player.event.AudioEvent;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
-import com.sedmelluq.discord.lavaplayer.player.event.AudioEventListener;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
-
-import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+
 
 public class TrackScheduler extends AudioEventAdapter {
 
     private final AudioPlayer player;
+
     public final BlockingQueue<AudioTrack> queue;
+
     public TrackScheduler(AudioPlayer player) {
         this.player = player;
         this.queue = new LinkedBlockingQueue<>();
@@ -28,6 +26,7 @@ public class TrackScheduler extends AudioEventAdapter {
 
     public void nextTrack() {
         player.startTrack(queue.poll(), false);
+
     }
 
     @Override
