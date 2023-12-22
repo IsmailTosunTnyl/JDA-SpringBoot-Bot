@@ -24,11 +24,11 @@
 		</repository>
 	</repositories>
 	<dependencies>
-		<!--
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-mongodb</artifactId>
-		</dependency> -->
+		</dependency>
 		<dependency>
 			<groupId>com.discord4j</groupId>
 			<artifactId>discord4j-core</artifactId>
@@ -42,6 +42,11 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
 		</dependency>
 
 
