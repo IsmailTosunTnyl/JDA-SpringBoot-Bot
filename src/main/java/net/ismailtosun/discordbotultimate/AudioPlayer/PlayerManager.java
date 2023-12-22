@@ -12,10 +12,13 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.ismailtosun.discordbotultimate.AudioPlayer.GuildMusicManager;
 import net.ismailtosun.discordbotultimate.Configurators.BotConfiguration;
+import net.ismailtosun.discordbotultimate.Entity.Playlist;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 public class PlayerManager {
 
@@ -88,6 +91,53 @@ public class PlayerManager {
         });
 
     }
+
+    public Playlist getplaylist(TextChannel textChannel, String trackUrl) throws InterruptedException {
+        final GuildMusicManager musicManager = getGuildMusicManager(textChannel.getGuild());
+        Playlist playlist = new Playlist();
+        ArrayList<String> urls = new ArrayList<>();
+        CountDownLatch latch = new CountDownLatch(1); // Create a latch to wait for completion
+
+        audioPlayerManager.loadItemOrdered(musicManager, trackUrl, new AudioLoadResultHandler() {
+
+            @Override
+            public void trackLoaded(AudioTrack audioTrack) {
+                // Handle individual track loaded (if needed)
+            }
+
+            @Override
+            public void playlistLoaded(AudioPlaylist audioPlaylist) {
+                List<AudioTrack> tracks = audioPlaylist.getTracks();
+
+                if (!tracks.isEmpty() && trackUrl.contains("list")) {
+                    playlist.setName(audioPlaylist.getName());
+                    for (AudioTrack track : tracks) {
+
+                        urls.add(track.getInfo().uri);
+                    }
+                } else {
+                    textChannel.sendMessage("Not a playlist").queue();
+                }
+
+                latch.countDown(); // Release the latch to signal completion
+            }
+
+            @Override
+            public void noMatches() {
+                latch.countDown(); // Release the latch to signal completion
+            }
+
+            @Override
+            public void loadFailed(FriendlyException e) {
+                latch.countDown(); // Release the latch to signal completion
+            }
+        });
+
+        latch.await(); // Wait for the latch to be released
+        playlist.setTracks(urls.toArray(new String[0]));
+        return playlist;
+    }
+
 
 
 
