@@ -93,6 +93,18 @@ public class PlayerManager {
     }
 
     public Playlist getplaylist(TextChannel textChannel, String trackUrl) throws InterruptedException {
+        /*
+        *
+        * it's return a Playlist object with tracks and url
+        * it's need playlist url and lavaplayer function to getting playlist info and tracks
+        *
+        *
+        *
+        * */
+
+
+
+
         final GuildMusicManager musicManager = getGuildMusicManager(textChannel.getGuild());
         Playlist playlist = new Playlist();
         ArrayList<String> urls = new ArrayList<>();
@@ -135,6 +147,7 @@ public class PlayerManager {
 
         latch.await(); // Wait for the latch to be released
         playlist.setTracks(urls.toArray(new String[0]));
+        playlist.setURL(trackUrl);
         return playlist;
     }
 

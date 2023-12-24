@@ -27,18 +27,26 @@ public class BotConfiguration {
     private String token;
 
     public static JDA jda;
+
+    PlayerManager playerManager = new PlayerManager();
     @Bean
     public JDA jda() {
-        PlayerManager playerManager = new PlayerManager();
+
         JDA jda = JDABuilder.createDefault(token)
                 .enableIntents(GatewayIntent.MESSAGE_CONTENT)
                 .addEventListeners(new MessageCreateListener(),
-                                    new CommandManager(playerManager),
-                                    new PlaylistCommands(playlistRepository,playerManager))
+                                    new CommandManager(playerManager)
+                                    //new PlaylistCommands(playlistRepository,playerManager),
+                       )
                 .build();
         BotConfiguration.jda= jda;
         return jda;
         
+    }
+
+    @Bean
+    public PlayerManager playerManager() {
+        return playerManager;
     }
 
 

@@ -32,24 +32,27 @@ public class PlaylistCommands extends ListenerAdapter {
            playlistRepository.findAll().forEach(playlist -> {
                event.getChannel().asTextChannel().sendMessage(playlist.getName()).queue();
            });
+           event.reply("All playlists").queue();
         }
 
         if (event.getName().equals("addplaylist")) {
 
             String url = event.getOption("url").getAsString();
-
+                //check if playlist already exists
             Playlist existingPlaylist = playlistRepository.findById(url).orElse(null);
 
             if (existingPlaylist != null) {
+                //if playlist already exists
                 event.reply("BU VAR VAR BI BAK ATMADAN ŞUNU BU VAR").queue();
                 return;
             }
 
+                //if playlist does not exist
+            existingPlaylist = playerManager.getplaylist(event.getChannel().asTextChannel(), url);
 
-           Playlist playlist = playerManager.getplaylist(event.getChannel().asTextChannel(), url);
+            playlistRepository.insert(existingPlaylist);
 
-            playlistRepository.save(playlist);
-            event.reply("Playlist added").queue();
+            event.reply("Playlist added "+existingPlaylist.getURL()).queue();
         }
     }
 
@@ -63,7 +66,6 @@ public class PlaylistCommands extends ListenerAdapter {
                 .addOption(OptionType.STRING, "url", "URL of the playlist", true));
 
         commandDatas.add(Commands.slash("playlists", "Shows all playlists"));
-
         event.getGuild().updateCommands().addCommands(commandDatas).queue();
 
     }

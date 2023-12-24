@@ -1,13 +1,121 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" >
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+  <meta charset="UTF-8">
+  <title>CodePen - Code this UI - Music player</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css'>
+	<link rel="stylesheet" href="style.css">
+
 </head>
 <body>
-<h1>Hello World!</h1>
-<h2 th:text="${message}">Message: "${message}"</h2>
-<p th:text="${message}"></p>
+<!-- partial:index.partial.html -->
+<div class="background">
+	<svg class="background__svg" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 1469 1000" xml:space="preserve">
+<polygon class="st0" points="788.5,-0.5 248.5,999.5 1469.5,999.5 1469.5,-0.5 "/>
+</svg>
+</div>
+<div class="container">
+	<div class="menu">
+		<div class="menu__profile-container">
+			<div class="menu__profile-pic">JD</div>
+			<div class="menu__profile-infos">
+				<div class="profile-infos__name">John Doe</div>
+				<a href="#" class="profile-infos__link-settings">Profile Settings</a>
+			</div>
+		</div>
+		<nav>
+			<div class="nav__group">
+				<div class="nav__group-title">My music</div>
+				<ul class="nav__group-list">
+					<li class="group-list__item">
+						<div class="item__icon"><i class="material-icons">recent_actors</i></div>
+						<div class="item__text">Artists</div>
+					</li>
+					<li class="group-list__item active">
+						<div class="item__icon"><i class="material-icons">library_music</i></div>
+						<div class="item__text">Albums</div>
+					</li>
+					<li class="group-list__item">
+						<div class="item__icon"><i class="material-icons">music_note</i></div>
+						<div class="item__text">Tracks</div>
+					</li>
+					<li class="group-list__item">
+						<div class="item__icon"><i class="material-icons">style</i></div>
+						<div class="item__text">Genres</div>
+					</li>
+				</ul>
+			</div>
+			<div class="nav__group">
+			<div class="nav__group-title">My experiences</div>
+				<ul class="nav__group-list">
+					<li class="group-list__item">
+						<div class="item__icon"><i class="material-icons">star</i></div>
+						<div class="item__text">After work</div>
+					</li>
+					<li class="group-list__item">
+						<div class="item__icon"><i class="material-icons">star</i></div>
+						<div class="item__text">Rock ballads</div>
+					</li>
+				</ul>
+			</div>
+			<div class="nav__group">
+				<button class="nav__group-button">+ start new experience</button>
+			</div>
+		</nav>
+	</div>
+	<div class="player">
+		<div class="player__top">
+			<button class="player__top-control"><i class="material-icons">chevron_left</i></button>
+			<div class="player__top-infos">
+				<div class="top-infos__title"></div>
+				<div class="top-infos__subtitle"></div>
+			</div>
+		</div>
+		<div class="player__middle">
+			<div class="player__middle-cover">
+			</div>
+			<div class="player__middle-cover current">
+				<div class="middle-cover__favourite"><i class="material-icons">star</i></div>
+			</div>
+			<div class="player__middle-cover">
+			</div>
+		</div>
+		<div class="player__bottom">
+			<div class="player__bottom-title"></div>
+			<label class="player__bottom-track">
+				<input min="0" step="100" type="range" class="bottom-track__slider" />
+				<span class="bottom-track__time">0:00</span>
+				<span class="bottom-track__elapsed"></span>
+			</label>
+			<div class="player__bottom-inputs">
+				<div class="bottom-inputs__level">
+					<i class="material-icons">volume_up</i>
+					<label class="level__slider-container">
+						<input min="0" max="100" type="range" class="level__slider" value="50" />
+						<span class="level__slider-down"></span>
+					</label>
+				</div>
+				<div class="bottom-inputs__controls">
+					<button class="controls__move"><i class="material-icons">fast_rewind</i></button>
+					<button class="controls__play-pause"><i class="material-icons">pause</i></button>
+					<button class="controls__move"><i class="material-icons">fast_forward</i></button>
+				</div>
+				<div class="spacer"></div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- partial -->
+
+
+
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
+<script  src="script.js" th:attr="data-json=${song}"></script>
 
 </body>
 </html>

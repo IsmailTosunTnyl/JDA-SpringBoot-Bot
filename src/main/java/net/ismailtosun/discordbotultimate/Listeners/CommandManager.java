@@ -32,8 +32,7 @@ public class CommandManager extends ListenerAdapter {
         super.onSlashCommandInteraction(event);
         if (event.getName().equals("ping")) {
             event.reply("Pong!").queue();
-        }
-        else if (event.getName().equals("join")) {
+        } else if (event.getName().equals("join")) {
             // get the user's voice channel
             VoiceChannel channel = event.getMember().getVoiceState().getChannel().asVoiceChannel();
             // join the voice channel
@@ -41,8 +40,7 @@ public class CommandManager extends ListenerAdapter {
             event.reply("Joined " + channel.getName()).queue();
 
             System.out.println(playerManager);
-        }
-        else if (event.getName().equals("play")) {
+        } else if (event.getName().equals("play")) {
             // get the user's voice channel
             VoiceChannel channel = event.getMember().getVoiceState().getChannel().asVoiceChannel();
             // get song name or url
@@ -57,8 +55,7 @@ public class CommandManager extends ListenerAdapter {
             // play the song
             playerManager.loadAndPlay(event.getChannel().asTextChannel(), getURI(song));
 
-        }
-        else if (event.getName().equals("next")) {
+        } else if (event.getName().equals("next")) {
             // get the user's voice channel
             Boolean channel = event.getMember().getVoiceState().inAudioChannel();
             // check player has joined a voice channel
@@ -82,6 +79,9 @@ public class CommandManager extends ListenerAdapter {
             playerManager.getGuildMusicManager(event.getGuild()).scheduler.nextTrack();
             //send message with new song name
             event.reply("Playing next song: " + playerManager.getGuildMusicManager(event.getGuild()).audioPlayer.getPlayingTrack().getInfo().title).queue();
+        } else if (event.getName().equals("now")) {
+
+            event.reply("Playing now: " + playerManager.getGuildMusicManager(event.getGuild()).audioPlayer.getPlayingTrack().getInfo().title).queue();
         }
     }
 
@@ -95,6 +95,7 @@ public class CommandManager extends ListenerAdapter {
         commands.add(Commands.slash("play", "Play a song")
                 .addOption(OptionType.STRING, "song", "Song name or url", true));
         commands.add(Commands.slash("next", "Play next song"));
+        commands.add(Commands.slash("now", "Show current song"));
         event.getGuild().updateCommands().addCommands(commands).queue();
 
     }

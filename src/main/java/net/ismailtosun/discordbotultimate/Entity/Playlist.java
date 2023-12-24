@@ -14,6 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @Document(collection = "playlists")
 public class Playlist {
+
     @Id
     private String URL;
     private String name;
