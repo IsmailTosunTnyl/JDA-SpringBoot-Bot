@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.ismailtosun.discordbotultimate.AudioPlayer.GuildMusicManager;
 import net.ismailtosun.discordbotultimate.Configurators.BotConfiguration;
 import net.ismailtosun.discordbotultimate.Entity.Playlist;
+import net.ismailtosun.discordbotultimate.Entity.Track;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -107,7 +108,7 @@ public class PlayerManager {
 
         final GuildMusicManager musicManager = getGuildMusicManager(textChannel.getGuild());
         Playlist playlist = new Playlist();
-        ArrayList<String> urls = new ArrayList<>();
+        ArrayList<Track> trackArrayList = new ArrayList<>();
         CountDownLatch latch = new CountDownLatch(1); // Create a latch to wait for completion
 
         audioPlayerManager.loadItemOrdered(musicManager, trackUrl, new AudioLoadResultHandler() {
@@ -125,7 +126,7 @@ public class PlayerManager {
                     playlist.setName(audioPlaylist.getName());
                     for (AudioTrack track : tracks) {
 
-                        urls.add(track.getInfo().uri);
+                        trackArrayList.add(new Track(track.getInfo().uri, track.getInfo().title, track.getInfo().author));
                     }
                 } else {
                     textChannel.sendMessage("Not a playlist").queue();
@@ -146,7 +147,7 @@ public class PlayerManager {
         });
 
         latch.await(); // Wait for the latch to be released
-        playlist.setTracks(urls.toArray(new String[0]));
+        playlist.setTracks(trackArrayList.toArray(new Track[0]));
         playlist.setURL(trackUrl);
         return playlist;
     }

@@ -18,7 +18,7 @@ public class Playlist {
     @Id
     private String URL;
     private String name;
-    private String[] tracks;
+    private Track[] tracks;
 
 
 }
