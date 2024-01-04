@@ -1,4 +1,7 @@
 var playlists = JSON.parse(document.currentScript.getAttribute('data-json'));
+position = document.currentScript.getAttribute('position');
+position = parseInt(position);
+console.log("POSITION: " + position);
 console.log(playlists);
 
 function extractVideoId(url) {
@@ -1145,18 +1148,33 @@ var data = {
 	coverCenter = visibleCovers.eq(1),
 	coverRight = visibleCovers.eq(2),
 	albumTracksLength =  playlists[selectedPlaylist].tracks.length,
-	artist =  playlists[selectedPlaylist].tracks[selectedAlbum].artists.name,
+	artist =  playlists[selectedPlaylist].tracks[selectedAlbum].author,
 	albumType = allAlbums[selectedAlbum].album_type,
 	currentAlbum =  playlists[selectedPlaylist].name,
 	currentTrack =  playlists[selectedPlaylist].tracks[selectedAlbum].title,
-	currentTrackDuration =30000,
+	currentTrackDuration =playlists[selectedPlaylist].tracks[selectedAlbum].duration,
 	currentCover = extractVideoId(playlists[selectedPlaylist].tracks[selectedAlbum].url);
+
 	$.fn.selectAlbum = function() {
 		console.log(trackNumber, albumTracksLength, currentTrack);
 
-		currentTrackTimer.html('10:00').css('left', '-8px');
-		currentTrackElapsed.css('width', '0px');
-		currentTrackSlider.val('20000');
+
+
+
+        minutes = Math.floor((position/1000)/60).toFixed(0);
+        seconds = Math.floor((position/1000)-(minutes*60)).toFixed(0);
+        trackerPosition = Math.floor((position / playlists[selectedPlaylist].tracks[selectedAlbum].duration) * (currentTrackSlider.width()-16)).toFixed(0);
+      if (seconds < 10) {
+        seconds = "0"+seconds;
+      }
+      console.log(minutes, seconds, trackerPosition);
+      currentTrackTimer.html(minutes + ':' + seconds).css('left', trackerPosition - 8 + 'px');
+      currentTrackElapsed.css('width', trackerPosition + 'px');
+
+
+
+
+		currentTrackSlider.val('');
 		topInfosTitle.html(artist);
 		coverCenter.css('background-image', 'url('+currentCover+')');
 		currentTrackTitle.html(currentTrack);
@@ -1180,6 +1198,8 @@ var data = {
 			coverRight.css('visibility', 'hidden');
 		}
 	};
+
+
 
 $(document).selectAlbum();
 currentTrackSlider.mousedown(function(){
@@ -1223,7 +1243,7 @@ visibleCovers.eq(0).click(function(){
 	currentAlbum = playlists[selectedPlaylist].name,
 	currentTrack = playlists[selectedPlaylist].tracks[selectedAlbum].title,
 	//currentAlbumDate = allAlbums[selectedAlbum].release_date.substring(0,4),
-	currentTrackDuration = 30000,
+	currentTrackDuration = playlists[selectedPlaylist].tracks[selectedAlbum].duration,
 	currentCover = extractVideoId(playlists[selectedPlaylist].tracks[selectedAlbum].url);
 	
 	$(document).selectAlbum();
@@ -1239,23 +1259,24 @@ visibleCovers.eq(2).click(function(){
 	currentAlbum = playlists[selectedPlaylist].name,
 	currentTrack = playlists[selectedPlaylist].tracks[selectedAlbum].title,
 	//currentAlbumDate = allAlbums[selectedAlbum].release_date.substring(0,4),
-	currentTrackDuration = 30000,
+	currentTrackDuration = playlists[selectedPlaylist].tracks[selectedAlbum].duration,
 	currentCover = extractVideoId(playlists[selectedPlaylist].tracks[selectedAlbum].url);
 	$(document).selectAlbum();
 });
 fastForward.click(function(){
+
 	if (trackNumber < albumTracksLength -1) {
 		console.log(trackNumber < albumTracksLength);
 		trackNumber++,
 		previous = selectedAlbum - 1,
 		next = selectedAlbum + 1,
 		albumTracksLength = playlists[selectedPlaylist].tracks.length,
-		artist = allAlbums[selectedAlbum].artists[0].name,
+		artist = playlists[selectedPlaylist].tracks[selectedAlbum].author,
 		albumType = allAlbums[selectedAlbum].album_type,
 		currentAlbum = allAlbums[selectedAlbum].name,
 		currentTrack = allAlbums[selectedAlbum].tracks.items[trackNumber].name,
 		//currentAlbumDate = allAlbums[selectedAlbum].release_date.substring(0,4),
-		currentTrackDuration = 30000,
+		currentTrackDuration = playlists[selectedPlaylist].tracks[selectedAlbum].duration,
 		currentCover = extractVideoId(playlists[selectedPlaylist].tracks[selectedAlbum].url);
 		
 		$(document).selectAlbum();
@@ -1272,8 +1293,39 @@ fastRewind.click(function(){
 		currentAlbum = allAlbums[selectedAlbum].name,
 		currentTrack =playlists[selectedPlaylist].tracks[selectedAlbum].title,
 		//currentAlbumDate = allAlbums[selectedAlbum].release_date.substring(0,4),
-		currentTrackDuration = 30000,
+		currentTrackDuration =playlists[selectedPlaylist].tracks[selectedAlbum].duration,
 		currentCover = extractVideoId(playlists[selectedPlaylist].tracks[selectedAlbum].url);
 		$(document).selectAlbum();
 	}
 });
+
+// automatically increment duration and update slider dynamically
+
+function updateSlider() {
+  if (position < playlists[selectedPlaylist].tracks[selectedAlbum].duration) {
+    let minutes = Math.floor((position / 1000) / 60).toFixed(0),
+        seconds = Math.floor((position / 1000) - (minutes * 60)).toFixed(0),
+        trackerPosition = Math.floor((position / playlists[selectedPlaylist].tracks[selectedAlbum].duration) * (currentTrackSlider.width() - 16)).toFixed(0);
+
+    if (seconds < 10) {
+      seconds = "0" + seconds;
+    }
+
+    // Update timer display
+    currentTrackTimer.html(minutes + ':' + seconds).css('left', trackerPosition - 8 + 'px');
+
+    // Update slider value
+    currentTrackSlider.val(position);
+
+    // Update elapsed track position
+    currentTrackElapsed.css('width', trackerPosition + 'px');
+
+    position += 1000;
+
+    // Schedule the next update
+    setTimeout(updateSlider, 1000);
+  }
+}
+
+// Start the update process
+updateSlider();

@@ -126,7 +126,7 @@ public class PlayerManager {
                     playlist.setName(audioPlaylist.getName());
                     for (AudioTrack track : tracks) {
 
-                        trackArrayList.add(new Track(track.getInfo().uri, track.getInfo().title, track.getInfo().author));
+                        trackArrayList.add(new Track(track.getInfo().uri, track.getInfo().title, track.getInfo().author, track.getDuration()));
                     }
                 } else {
                     textChannel.sendMessage("Not a playlist").queue();

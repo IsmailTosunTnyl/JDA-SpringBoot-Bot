@@ -12,15 +12,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 
 @Configuration
 public class BotConfiguration {
 
     private PlaylistRepository playlistRepository;
+    private final SimpMessageSendingOperations messagingTemplate;
 
     @Autowired
-    public BotConfiguration(PlaylistRepository playlistRepository) {
+    public BotConfiguration(PlaylistRepository playlistRepository, SimpMessageSendingOperations messagingTemplate) {
         this.playlistRepository = playlistRepository;
+        this.messagingTemplate = messagingTemplate;
     }
 
     @Value("${token}")
@@ -35,8 +38,8 @@ public class BotConfiguration {
         JDA jda = JDABuilder.createDefault(token)
                 .enableIntents(GatewayIntent.MESSAGE_CONTENT)
                 .addEventListeners(new MessageCreateListener(),
-                                    //new CommandManager(playerManager),
-                                    new PlaylistCommands(playlistRepository,playerManager)
+                                    new CommandManager(playerManager,messagingTemplate)
+                                    //new PlaylistCommands(playlistRepository,playerManager)
                        )
                 .build();
         BotConfiguration.jda= jda;

@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.ismailtosun.discordbotultimate.AudioPlayer.PlayerManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,12 +20,14 @@ import java.util.List;
 public class CommandManager extends ListenerAdapter {
 
 
-    private PlayerManager playerManager;
+    private final PlayerManager playerManager;
+    private final SimpMessageSendingOperations messagingTemplate;
 
 
-
-    public CommandManager(PlayerManager playerManager) {
+    public CommandManager(PlayerManager playerManager, SimpMessageSendingOperations messagingTemplate) {
         this.playerManager = playerManager;
+        this.messagingTemplate = messagingTemplate;
+
     }
 
     @Override
@@ -83,6 +86,10 @@ public class CommandManager extends ListenerAdapter {
 
             event.reply("Playing now: " + playerManager.getGuildMusicManager(event.getGuild()).audioPlayer.getPlayingTrack().getInfo().title).queue();
         }
+        else if (event.getName().equals("test")) {
+            String test = event.getOption("test").getAsString();
+            messagingTemplate.convertAndSend("/topic/public", test);
+        }
     }
 
     @Override
@@ -96,6 +103,7 @@ public class CommandManager extends ListenerAdapter {
                 .addOption(OptionType.STRING, "song", "Song name or url", true));
         commands.add(Commands.slash("next", "Play next song"));
         commands.add(Commands.slash("now", "Show current song"));
+        commands.add(Commands.slash("test", "test").addOption(OptionType.STRING, "test", "test", false));
         event.getGuild().updateCommands().addCommands(commands).queue();
 
     }
