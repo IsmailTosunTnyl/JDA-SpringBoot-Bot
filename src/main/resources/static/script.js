@@ -29,13 +29,45 @@ function extractVideoId(url) {
         return null;
     }
 
-
-
   return `http://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
 }
 
+/*
+*
+*
+* Web Socket Connection and Message Handling functions
+*
+*
+*
+* */
+
+var stompClient = null;
+function connect(event) {
+
+  var socket = new SockJS('/websocket');
+  stompClient = Stomp.over(socket);
+  stompClient.connect({}, onConnected );
+  console.log("Connected");
+}
+function onConnected() {
+  // Subscribe to the Public Topic
+  stompClient.subscribe('/bot/public', onMessageReceived);
 
 
+
+  console.log("Subscribed");
+}
+function onMessageReceived(payload) {
+  var message = JSON.parse(payload.body);
+  console.log("New Message: "+message);
+
+
+}
+
+function sendMessage() {
+  var messageContent = "Hello from client";
+  stompClient.send("/app/bot.changeSong", {}, JSON.stringify(messageContent));
+}
 
 
 console.log(playlists[0].tracks.length + "**********");
@@ -1329,3 +1361,4 @@ function updateSlider() {
 
 // Start the update process
 updateSlider();
+window.addEventListener("load", connect, true);

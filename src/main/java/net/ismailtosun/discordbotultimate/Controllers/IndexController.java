@@ -18,7 +18,7 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.dao.DuplicateKeyException;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +59,7 @@ public class IndexController {
 
     @GetMapping("/live")
     public String livePage(Model model) throws JsonProcessingException {
-        Guild guild = jda.getGuildById("775351095748198442");
+        Guild guild = jda.getGuildById("533018014694506496");
         System.out.println(guild.getName());
         Track track1 = new Track();
         long position;
@@ -111,17 +111,7 @@ public class IndexController {
         return "socket.html";
     }
 
-  @MessageMapping("chat.sendMessage")
-  @SendTo("/topic/public")
-  public String addUser(
-          @Payload String message,
-          SimpMessageHeaderAccessor headerAccessor
-  ) {
-      // Add username in web socket session
-      headerAccessor.getSessionAttributes().put("message", message+" from server");
-      System.out.println(message);
-      return message;
-  }
+
 
 
 }
