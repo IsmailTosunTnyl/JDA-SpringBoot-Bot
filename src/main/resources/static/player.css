@@ -1,0 +1,148 @@
+.player-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    padding-top: 2%;
+    
+    
+}
+.btn {
+    border: none;
+    outline: none;
+    background: transparent;
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+    font-size: 1.5rem;
+    transition: color 0.3s ease-in-out;
+}
+.btn-play {
+   font-size: 2.4rem;
+}
+
+.btn:hover {
+    color: #fff;
+}
+
+.cover{
+    max-width: 100%;
+    max-height: 75vh;
+}
+
+
+.song-cover-container {
+    margin: 1rem auto;
+    
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-image: url('http://img.youtube.com/vi/yJpJCZYTL74/maxresdefault.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 100vh; /* Set the height to cover the entire viewport */
+    display: block;
+    align-items: center;
+    justify-content: center;
+    background-attachment: fixed;
+}
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: inherit;
+    width: 100%;
+    height: 100%;
+    filter: blur(16px) ;
+    z-index: -1;
+}
+.slidecontainer{
+    margin-top: -1rem;
+    width:100%;
+    z-index:1;
+    opacity:0.6;
+
+}
+
+
+
+.slidecontainer:hover{
+    opacity:1;
+}
+
+.song-list{
+    margin-top: 1rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background-color: rgba(0,0,0,0.5);
+    border-radius: 1rem;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    z-index: 1;
+    opacity:0.6;
+    
+}
+
+
+.title-text{
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.list-item{
+    display: flex
+}
+.list-item-cover{
+    width: 20%;
+    margin-right: 1rem;
+}
+.list-item-title{
+    width: 80%;
+    margin-left: 1rem;
+    text-align: left;
+    font-size: 0.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.list-item-duration{
+    font-size: 0.5rem;
+}
+
+.list-group-item{
+    padding-top: 5px;
+    padding-bottom: 3px;
+    padding-left: 5px;
+    padding-right: 8px;
+}
+.now-playing-icon{
+margin: auto;
+font-size: 1rem;
+}
+
+.playlists-container{
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    
+}
+
+@media (max-width: 1400px) {
+    .song-list{
+        display: none;
+    }
+}
+
+
+
+
+
