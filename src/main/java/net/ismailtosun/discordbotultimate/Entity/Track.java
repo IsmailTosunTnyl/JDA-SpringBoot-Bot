@@ -14,4 +14,5 @@ public class Track {
     private String title;
     private String author;
     private long duration;
+    private long position;
 }

@@ -38,28 +38,23 @@ public class IndexController {
         this.playerManager = playerManager;
         this.jda = jda;
         this.guild = jda.getGuildById("775351095748198442");
+        System.out.println(guild);
     }
 
 
     @GetMapping("/")
     public String indexPage(Model model) throws JsonProcessingException {
-        // send data to the template
-        model.addAttribute("message", "Ismail");
-
+        // get all playlists
 
         List<Playlist> playlistList = playlistRepository.findAll();
-
-        System.out.println(playlistList.size());
-
-
         model.addAttribute("playlists", objectMapper.writeValueAsString(playlistList));
-        // return the template name
-        return "index";
+        System.out.println(playlistList.size());
+        return "player";
     }
 
     @GetMapping("/live")
     public String livePage(Model model) throws JsonProcessingException {
-        Guild guild = jda.getGuildById("533018014694506496");
+        Guild guild = jda.getGuildById("775351095748198442");
         System.out.println(guild.getName());
         Track track1 = new Track();
         long position;
@@ -73,7 +68,8 @@ public class IndexController {
                 trackList.add(new Track(audioTrack.getInfo().uri,
                                         audioTrack.getInfo().title,
                                         audioTrack.getInfo().author,
-                                        audioTrack.getDuration()));
+                                        audioTrack.getDuration(),
+                                        audioTrack.getPosition()));
             }
 
         }
@@ -101,15 +97,10 @@ public class IndexController {
         model.addAttribute("playlists", objectMapper.writeValueAsString(playlistList));
         model.addAttribute("position", position);
 
-        return "index";
+        return "player";
 
     }
 
-
-    @GetMapping("/chats")
-    public String chatPage() {
-        return "socket.html";
-    }
 
 
 

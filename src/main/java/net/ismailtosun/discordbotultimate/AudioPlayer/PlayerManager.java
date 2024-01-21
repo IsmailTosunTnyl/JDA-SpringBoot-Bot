@@ -76,6 +76,7 @@ public class PlayerManager {
                     textChannel.sendMessage("Adding to queue: " + tracks.get(0).getInfo().title).queue();
 
                 }
+                textChannel.sendMessage("No tracks in playlist").queue();
 
 
             }
@@ -126,7 +127,7 @@ public class PlayerManager {
                     playlist.setName(audioPlaylist.getName());
                     for (AudioTrack track : tracks) {
 
-                        trackArrayList.add(new Track(track.getInfo().uri, track.getInfo().title, track.getInfo().author, track.getDuration()));
+                        trackArrayList.add(new Track(track.getInfo().uri, track.getInfo().title, track.getInfo().author, track.getDuration(), track.getPosition()));
                     }
                 } else {
                     textChannel.sendMessage("Not a playlist").queue();

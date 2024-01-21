@@ -2,6 +2,7 @@ package net.ismailtosun.discordbotultimate.Configurators;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.ismailtosun.discordbotultimate.AudioPlayer.PlayerManager;
 import net.ismailtosun.discordbotultimate.Listeners.CommandManager;
@@ -52,5 +53,9 @@ public class BotConfiguration {
         return playerManager;
     }
 
+    @Bean
+    public Guild guild() {
+        return jda.getGuildById("775351095748198442");
+    }
 
 }
