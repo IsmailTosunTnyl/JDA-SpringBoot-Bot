@@ -11,6 +11,7 @@ import net.ismailtosun.discordbotultimate.Entity.Playlist;
 import net.ismailtosun.discordbotultimate.Entity.Track;
 import net.ismailtosun.discordbotultimate.Repository.PlaylistRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -30,31 +31,51 @@ public class IndexController {
     private PlayerManager playerManager;
     private JDA jda;
     ObjectMapper objectMapper = new ObjectMapper();
-    Guild guild;
+
+    @Value("${spring.data.guild.id}")
+    private String guildId;
 
     @Autowired
     public IndexController(PlaylistRepository playlistRepository, PlayerManager playerManager, JDA jda) {
         this.playlistRepository = playlistRepository;
         this.playerManager = playerManager;
         this.jda = jda;
-        this.guild = jda.getGuildById("775351095748198442");
-        System.out.println(guild);
+
     }
 
 
     @GetMapping("/")
     public String indexPage(Model model) throws JsonProcessingException {
-        // get all playlists
+        Guild guild = jda.getGuildById(guildId);
 
+        // get all playlists
         List<Playlist> playlistList = playlistRepository.findAll();
         model.addAttribute("playlists", objectMapper.writeValueAsString(playlistList));
+
+        // get current tracks queue
+        List<Track> trackList = new ArrayList<>();
+        if (!playerManager.getGuildMusicManager(guild).scheduler.queue.isEmpty()) {
+            for (AudioTrack audioTrack : playerManager.getGuildMusicManager(guild).scheduler.queue) {
+
+                trackList.add(new Track(audioTrack.getInfo().uri,
+                        audioTrack.getInfo().title,
+                        audioTrack.getInfo().author,
+                        audioTrack.getDuration(),
+                        audioTrack.getPosition()));
+            }
+
+        }
+        model.addAttribute("tracks", objectMapper.writeValueAsString(trackList));
+        System.out.println(trackList);
         System.out.println(playlistList.size());
+
+
         return "player";
     }
 
     @GetMapping("/live")
     public String livePage(Model model) throws JsonProcessingException {
-        Guild guild = jda.getGuildById("775351095748198442");
+        Guild guild = jda.getGuildById(guildId);
         System.out.println(guild.getName());
         Track track1 = new Track();
         long position;
@@ -73,6 +94,8 @@ public class IndexController {
             }
 
         }
+
+
         // insert current track to queue
         if (playerManager.getGuildMusicManager(guild).audioPlayer.getPlayingTrack() != null) {
 

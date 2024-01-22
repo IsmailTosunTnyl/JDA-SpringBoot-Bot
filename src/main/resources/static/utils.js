@@ -1,6 +1,5 @@
 function extractVideoCoverFromUrl(url) {
     let videoId = null;
-    console.log("VIDEO ID URL:"+ url);
     try {
         const youtubeRegex = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
 
@@ -31,6 +30,11 @@ function setSliderValue(duration,position){
     slider.max = duration;
     slider.value = position;
 
+}
 
-
+function getReadableDurationFromMilliseconds(duration){
+    var seconds = Math.floor(duration/1000);
+    var minutes = Math.floor(seconds/60);
+    seconds = seconds - minutes*60;
+    return minutes+":"+seconds;
 }

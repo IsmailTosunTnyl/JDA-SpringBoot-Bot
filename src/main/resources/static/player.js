@@ -1,12 +1,12 @@
 "USE STRICT"
 var myCarousel = document.querySelector('#carouselExampleControls')
 var playlist_container = document.getElementById("playlists-container");
-
+var tracks_container = document.getElementById("tracks-container");
 var carousel = new bootstrap.Carousel(myCarousel)
-
+var slider = document.getElementById("trackSlider");
 playlists_list = JSON.parse( document.currentScript.getAttribute('playlists'));
+tracks_list = JSON.parse( document.currentScript.getAttribute('tracks'));
 
-console.log(playlists_list.length);
 
 // ************** Websocket ***************
 
@@ -43,9 +43,15 @@ function onCurrentSongMessageReceived(payload) {
 
 
 }
+
+// detect when the slider is moved
+slider.oninput = function() {
+    // send the new position to the server
+    stompClient.send('/app/bot/song.seekPosition', {}, JSON.stringify({ position: this.value }));
+}
 function nextSong2(payload){
     var message = payload.body;
-    console.log("nextSong2"+message);
+
 
 }
 
@@ -58,15 +64,12 @@ var index = 0;
 
 
 function nextSong(){
-    index++;
-    carousel.next();
-    if(index >= links.length){
-        index = 0;
-    }
-    document.body.style.backgroundImage = "url('"+links[index]+"')";
+    stompClient.send('/app/bot/song.changeNext');
+
 }
 
 function previousSong(){
+    // probably impossible because of lavaplayer queue system
     index--;
     carousel.prev();
     if(index < 0){
@@ -108,8 +111,42 @@ function fillPlaylist(){
     }
 }
 
+function fillTracks(){
+
+    for(var i = 0; i < tracks_list.length; i++) {
+        var newTrack = document.createElement("li");
+        newTrack.id = i;
+
+        newTrack.className = "list-group-item";
+        newTrack.onclick = function(){playTrack(this.id)};
+        newTrack.innerHTML = `
+        <div class="list-item">
+            <img src="` + extractVideoCoverFromUrl(tracks_list[i]["url"]) + `" class="list-item-cover" alt="...">
+            <div class="col " style="padding: 0;">
+                <h1 class="list-item-title"> ${tracks_list[i]["title"]} </h1>
+                <h1 class="list-item-duration"> ${ getReadableDurationFromMilliseconds(tracks_list[i]["duration"])} </h1>
+            </div>
+            <i class="fa fa-music now-playing-icon"></i>
+        </div>
+        `
+        tracks_container.appendChild(newTrack);
+    }
+
+}
+
+function playTrack(trackId) {
+    try {
+        console.log("Playing track: " + trackId);
+        stompClient.send('/app/bot/song.changeById', {}, JSON.stringify({ trackId: trackId }));
+    } catch (error) {
+        console.error("Error sending message to WebSocket server:", error);
+        // Handle the error, show an alert, or log it as needed
+    }
+}
+
 window.onload = function(){
     fillPlaylist();
+    fillTracks();
     connect()
 }
 

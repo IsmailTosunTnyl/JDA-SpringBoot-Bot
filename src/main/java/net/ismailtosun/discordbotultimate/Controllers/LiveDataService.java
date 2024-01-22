@@ -5,13 +5,11 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.ismailtosun.discordbotultimate.AudioPlayer.PlayerManager;
 import net.ismailtosun.discordbotultimate.Configurators.BotConfiguration;
 import net.ismailtosun.discordbotultimate.Entity.Track;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 @Service
-public class LiveDataController {
+public class LiveDataService {
     private final SimpMessageSendingOperations messagingTemplate;
     private final JDA jda;
     private  Guild guild ;
@@ -19,11 +17,10 @@ public class LiveDataController {
 
 
 
-    public LiveDataController(SimpMessageSendingOperations messagingTemplate, PlayerManager playerManager) {
+    public LiveDataService(SimpMessageSendingOperations messagingTemplate, PlayerManager playerManager) {
         this.messagingTemplate = messagingTemplate;
         this.playerManager = playerManager;
         jda = BotConfiguration.jda;
-        System.out.println(jda);
         guild = jda.getGuildById("775351095748198442");
 
         sendCurrentTrack();
@@ -38,7 +35,7 @@ public class LiveDataController {
             while (true) {
                 try {
                     if (guild == null) {
-                        System.out.println("guild is null");
+
                         Thread.sleep(1000);
                         guild = jda.getGuildById("775351095748198442");
                         continue;
@@ -51,10 +48,8 @@ public class LiveDataController {
                         track.setUrl(playerManager.getGuildMusicManager(guild).audioPlayer.getPlayingTrack().getInfo().uri);
                         track.setDuration(playerManager.getGuildMusicManager(guild).audioPlayer.getPlayingTrack().getDuration());
                         track.setPosition(playerManager.getGuildMusicManager(guild).audioPlayer.getPlayingTrack().getPosition());
-                        System.out.println(playerManager.getGuildMusicManager(guild).audioPlayer.getPlayingTrack().getDuration());
-                        System.out.println(playerManager.getGuildMusicManager(guild).audioPlayer.getPlayingTrack().getPosition());
+
                         messagingTemplate.convertAndSend("/bot/currentSong", track);
-                        messagingTemplate.convertAndSend("/bot/next", "HEHE");
 
                     }
 

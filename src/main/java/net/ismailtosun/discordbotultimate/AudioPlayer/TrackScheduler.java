@@ -51,4 +51,30 @@ public class TrackScheduler extends AudioEventAdapter {
     }
 
 
+    public void playTrackById(int position) {
+        if (position < 1 || position > queue.size()) {
+            System.out.println("Invalid position: " + position);
+            return;
+        }
+
+        // Dequeue and requeue tracks until the desired position
+        for (int i = 1; i < position; i++) {
+            AudioTrack removedTrack = queue.poll();
+            if (removedTrack != null) {
+                queue.offer(removedTrack);
+            }
+        }
+
+        // Start the track at the specified position
+        AudioTrack requestedTrack = queue.poll();
+        if (requestedTrack != null) {
+            player.startTrack(requestedTrack, false);
+            BotConfiguration.jda.getPresence().setActivity(
+                    Activity.customStatus("Playing: " + requestedTrack.getInfo().title)
+            );
+        } else {
+            System.out.println("Error: Unable to play track at position " + position);
+        }
+    }
+
 }
