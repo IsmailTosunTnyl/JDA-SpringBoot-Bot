@@ -2,8 +2,7 @@ package net.ismailtosun.discordbotultimate.AudioPlayer;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
-import net.ismailtosun.discordbotultimate.AudioPlayer.AudioPlayerSendHandler;
-import net.ismailtosun.discordbotultimate.AudioPlayer.TrackScheduler;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 
 public class GuildMusicManager {
 
@@ -11,9 +10,9 @@ public class GuildMusicManager {
     public final TrackScheduler scheduler;
     private final AudioPlayerSendHandler sendHandler;
 
-    public GuildMusicManager(AudioPlayerManager manager) {
+    public GuildMusicManager(AudioPlayerManager manager, SimpMessageSendingOperations messagingTemplate) {
         this.audioPlayer = manager.createPlayer();
-        this.scheduler = new TrackScheduler(audioPlayer);
+        this.scheduler = new TrackScheduler(audioPlayer,messagingTemplate);
         this.audioPlayer.addListener(scheduler);
         this.sendHandler = new AudioPlayerSendHandler(audioPlayer);
     }

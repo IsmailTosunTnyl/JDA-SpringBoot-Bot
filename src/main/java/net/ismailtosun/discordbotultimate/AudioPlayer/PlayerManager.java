@@ -7,28 +7,35 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-import net.ismailtosun.discordbotultimate.AudioPlayer.GuildMusicManager;
-import net.ismailtosun.discordbotultimate.Configurators.BotConfiguration;
 import net.ismailtosun.discordbotultimate.Entity.Playlist;
 import net.ismailtosun.discordbotultimate.Entity.Track;
+import net.ismailtosun.discordbotultimate.Services.TrackQeueUpdateService;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 
+@Service
 public class PlayerManager {
 
     public final Map<Long, GuildMusicManager> musicManagers;
     public final AudioPlayerManager audioPlayerManager;
+    private final SimpMessageSendingOperations messagingTemplate;
+    private final TrackQeueUpdateService trackQeueUpdateService;
 
-    public PlayerManager() {
+
+    public PlayerManager(SimpMessageSendingOperations messagingTemplate) {
         this.musicManagers = new HashMap<>();
         this.audioPlayerManager = new DefaultAudioPlayerManager();
+        this.messagingTemplate = messagingTemplate;
+        this.trackQeueUpdateService = new TrackQeueUpdateService(messagingTemplate);
 
         AudioSourceManagers.registerRemoteSources(audioPlayerManager);
         AudioSourceManagers.registerLocalSource(audioPlayerManager);
@@ -37,7 +44,7 @@ public class PlayerManager {
 
     public GuildMusicManager getGuildMusicManager(Guild guild) {
           return musicManagers.computeIfAbsent(guild.getIdLong(), (guildId) -> {
-                final GuildMusicManager guildMusicManager = new GuildMusicManager(audioPlayerManager);
+                final GuildMusicManager guildMusicManager = new GuildMusicManager(audioPlayerManager, messagingTemplate);
                 guild.getAudioManager().setSendingHandler(guildMusicManager.getSendHandler());
                 return guildMusicManager;
             });
@@ -51,6 +58,9 @@ public class PlayerManager {
             @Override
             public void trackLoaded(AudioTrack audioTrack) {
                 musicManager.scheduler.queue(audioTrack);
+                // For updating queue
+                trackQeueUpdateService.updateQueue(musicManager.scheduler.queue);
+
 
                 textChannel.sendMessage("Adding to queue: " + audioTrack.getInfo().title).queue();
             }
@@ -73,10 +83,11 @@ public class PlayerManager {
                         musicManager.scheduler.queue(tracks.get(0));
 
                     }
+                    trackQeueUpdateService.updateQueue(musicManager.scheduler.queue);
                     textChannel.sendMessage("Adding to queue: " + tracks.get(0).getInfo().title).queue();
 
                 }
-                textChannel.sendMessage("No tracks in playlist").queue();
+
 
 
             }
@@ -93,6 +104,8 @@ public class PlayerManager {
         });
 
     }
+
+
 
     public Playlist getplaylist(TextChannel textChannel, String trackUrl) throws InterruptedException {
         /*

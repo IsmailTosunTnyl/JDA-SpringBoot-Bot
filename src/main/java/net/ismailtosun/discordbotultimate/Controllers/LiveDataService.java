@@ -5,8 +5,12 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.ismailtosun.discordbotultimate.AudioPlayer.PlayerManager;
 import net.ismailtosun.discordbotultimate.Configurators.BotConfiguration;
 import net.ismailtosun.discordbotultimate.Entity.Track;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class LiveDataService {
@@ -15,13 +19,14 @@ public class LiveDataService {
     private  Guild guild ;
     private final PlayerManager playerManager;
 
+    @Value("${spring.data.guild.id}")
+    private String guildId;
 
 
     public LiveDataService(SimpMessageSendingOperations messagingTemplate, PlayerManager playerManager) {
         this.messagingTemplate = messagingTemplate;
         this.playerManager = playerManager;
         jda = BotConfiguration.jda;
-        guild = jda.getGuildById("775351095748198442");
 
         sendCurrentTrack();
     }
@@ -37,7 +42,7 @@ public class LiveDataService {
                     if (guild == null) {
 
                         Thread.sleep(1000);
-                        guild = jda.getGuildById("775351095748198442");
+                        guild = jda.getGuildById(guildId);
                         continue;
                     }
                     Thread.sleep(1000);
@@ -66,6 +71,8 @@ public class LiveDataService {
 
 
     }
+
+
 
 
 }

@@ -23,7 +23,7 @@ function connect(event) {
 function onConnected() {
     // Subscribe to the Public Topic
     stompClient.subscribe('/bot/currentSong', onCurrentSongMessageReceived);
-    stompClient.subscribe('/bot/next', nextSong2);
+    stompClient.subscribe('/bot/queue', onQueueMessageReceived);
 
     console.log("Subscribed to /bot/public");
 }
@@ -49,9 +49,11 @@ slider.oninput = function() {
     // send the new position to the server
     stompClient.send('/app/bot/song.seekPosition', {}, JSON.stringify({ position: this.value }));
 }
-function nextSong2(payload){
-    var message = payload.body;
-
+function onQueueMessageReceived(payload){
+    console.log("onQueueMessageReceived");
+    tracks_list = JSON.parse(payload.body);
+    tracks_container.innerHTML = "";
+    fillTracks();
 
 }
 
@@ -147,7 +149,7 @@ function playTrack(trackId) {
 window.onload = function(){
     fillPlaylist();
     fillTracks();
-    connect()
+    connect();
 }
 
 
