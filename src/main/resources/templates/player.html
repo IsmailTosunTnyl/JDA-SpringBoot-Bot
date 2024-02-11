@@ -49,14 +49,9 @@
 
                   <div id="carouselExampleControls" class="carousel slide" data-interval="false" >
                     <div class="carousel-inner" >
+                        <!-- *** Initial song image *** -->
                       <div class="carousel-item active">
                         <img  src="http://img.youtube.com/vi/yJpJCZYTL74/maxresdefault.jpg" class="d-block w-100 cover" alt="...">
-                      </div>
-                      <div class="carousel-item">
-                        <img src="http://img.youtube.com/vi/qmpORlyvJpo/maxresdefault.jpg" class="d-block w-100 cover" alt="...">
-                      </div>
-                      <div class="carousel-item">
-                        <img src="http://img.youtube.com/vi/m1aWkPjA4w0/maxresdefault.jpg" class="d-block w-100 cover" alt="...">
                       </div>
                     </div>
                     <button class="carousel-control-prev" onclick="previousSong()" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
@@ -83,7 +78,7 @@
                     <div class="col">
                       <div>
                         <button class="btn" onclick="previousSong()"><i class="fa fa-backward"></i></button>
-                        <button class="btn btn-play"><i class="fa fa-play"></i></button>
+                        <button class="btn btn-play" onclick="playPause()"><i id="playPauseIcon" class="fa fa-play"></i></button>
                         <button class="btn " onclick="nextSong()"><i class="fa fa-forward"></i></button>
                       </div>
                     </div>

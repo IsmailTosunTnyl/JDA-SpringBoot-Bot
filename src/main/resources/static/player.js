@@ -4,9 +4,11 @@ var playlist_container = document.getElementById("playlists-container");
 var tracks_container = document.getElementById("tracks-container");
 var carousel = new bootstrap.Carousel(myCarousel)
 var slider = document.getElementById("trackSlider");
+var playPauseButton = document.getElementById("playPauseIcon");
 playlists_list = JSON.parse( document.currentScript.getAttribute('playlists'));
 tracks_list = JSON.parse( document.currentScript.getAttribute('tracks'));
-
+var ispaused = false;
+var lastPosition = 0;
 
 // ************** Websocket ***************
 
@@ -31,6 +33,14 @@ function onConnected() {
 function onCurrentSongMessageReceived(payload) {
     var currentTrack = JSON.parse(payload.body);
 
+    // update playPauseButton depending on position of the song comparing to last position
+    if (currentTrack.position == lastPosition){
+        playPauseButton.className = "fa fa-play";
+    } else {
+        playPauseButton.className = "fa fa-pause";
+    }
+    lastPosition = currentTrack.position;
+
     // Update Slider
     setSliderValue(currentTrack.duration,currentTrack.position);
     // Update body background
@@ -39,6 +49,11 @@ function onCurrentSongMessageReceived(payload) {
     carousel._element.querySelector('.carousel-item:first-child img').src = extractVideoCoverFromUrl(currentTrack.url);
     // Update title
     document.getElementById("current-song-title").innerHTML = currentTrack.title;
+
+
+
+
+
 
 
 
@@ -58,8 +73,7 @@ function onQueueMessageReceived(payload){
 }
 
 
-links = ["http://img.youtube.com/vi/yJpJCZYTL74/maxresdefault.jpg","http://img.youtube.com/vi/qmpORlyvJpo/maxresdefault.jpg","http://img.youtube.com/vi/m1aWkPjA4w0/maxresdefault.jpg","http://img.youtube.com/vi/yJpJCZYTL74/maxresdefault.jpg","http://img.youtube.com/vi/qmpORlyvJpo/maxresdefault.jpg","http://img.youtube.com/vi/m1aWkPjA4w0/maxresdefault.jpg","http://img.youtube.com/vi/yJpJCZYTL74/maxresdefault.jpg","http://img.youtube.com/vi/qmpORlyvJpo/maxresdefault.jpg","http://img.youtube.com/vi/m1aWkPjA4w0/maxresdefault.jpg"]
-var index = 0;
+
 
 
 
@@ -67,17 +81,19 @@ var index = 0;
 
 function nextSong(){
     stompClient.send('/app/bot/song.changeNext');
-
 }
 
 function previousSong(){
     // probably impossible because of lavaplayer queue system
-    index--;
-    carousel.prev();
-    if(index < 0){
-        index = links.length-1;
-    }
-    document.body.style.backgroundImage = "url('"+links[index]+"')";
+
+}
+function playPause(){
+    stompClient.send('/app/bot/song.playPause');
+
+   playPauseButton.className = ispaused ? "fa fa-pause" : "fa fa-play";
+    ispaused = !ispaused;
+
+
 }
 
 function fillPlaylist(){

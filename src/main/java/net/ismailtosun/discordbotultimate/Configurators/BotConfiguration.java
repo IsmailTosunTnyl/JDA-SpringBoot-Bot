@@ -44,7 +44,7 @@ public class BotConfiguration {
         JDA jda = JDABuilder.createDefault(token)
                 .enableIntents(GatewayIntent.MESSAGE_CONTENT)
                 .addEventListeners(new MessageCreateListener(),
-                                    new CommandManager(playerManager,messagingTemplate)
+                                    new CommandManager(playerManager,messagingTemplate,playlistRepository)
                                     //new PlaylistCommands(playlistRepository,playerManager)
                        )
                 .build();

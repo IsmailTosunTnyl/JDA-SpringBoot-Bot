@@ -78,6 +78,7 @@ public class PlayerManager {
                         for (AudioTrack track : tracks) {
                             musicManager.scheduler.queue(track);
                         }
+
                     }
                     else {
                         musicManager.scheduler.queue(tracks.get(0));

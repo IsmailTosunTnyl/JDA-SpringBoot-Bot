@@ -63,6 +63,21 @@ public class WebSocketController {
         }
     }
 
+    @MessageMapping("/bot/song.playPause")
+    public boolean playPause() {
+        Guild guild = jda.getGuildById(guildId);
+        if (playerManager.getGuildMusicManager(guild).audioPlayer.isPaused()) {
+            playerManager.getGuildMusicManager(guild).audioPlayer.setPaused(false);
+            return true;
+        } else {
+            playerManager.getGuildMusicManager(guild).audioPlayer.setPaused(true);
+            return false;
+        }
+
+
+
+    }
+
 
 
 
