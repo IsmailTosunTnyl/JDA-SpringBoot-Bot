@@ -18,6 +18,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 
 
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
+@CrossOrigin(maxAge = 3600, origins = "*")
 public class IndexController {
 
     private PlaylistRepository playlistRepository;
@@ -50,6 +52,7 @@ public class IndexController {
 
         // get all playlists
         List<Playlist> playlistList = playlistRepository.findAll();
+
         model.addAttribute("playlists", objectMapper.writeValueAsString(playlistList));
 
         // get current tracks queue
@@ -66,8 +69,7 @@ public class IndexController {
 
         }
         model.addAttribute("tracks", objectMapper.writeValueAsString(trackList));
-        System.out.println(trackList);
-        System.out.println(playlistList.size());
+
 
 
         return "player";

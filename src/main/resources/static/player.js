@@ -32,7 +32,7 @@ function onConnected() {
 
 function onCurrentSongMessageReceived(payload) {
     var currentTrack = JSON.parse(payload.body);
-
+    console.log("onCurrentSongMessageReceived");
     // update playPauseButton depending on position of the song comparing to last position
     if (currentTrack.position == lastPosition){
         playPauseButton.className = "fa fa-play";
@@ -83,8 +83,11 @@ function nextSong(){
     stompClient.send('/app/bot/song.changeNext');
 }
 
-function previousSong(){
-    // probably impossible because of lavaplayer queue system
+function clearList(){
+    stompClient.send('/app/bot/playlist.clear');
+    // clear the list
+    tracks_container.innerHTML = "";
+    playPauseButton.className = "fa fa-play";
 
 }
 function playPause(){
@@ -96,16 +99,24 @@ function playPause(){
 
 }
 
+function playPlaylist(playlistUrl){
+    stompClient.send('/app/bot/playlist.play', {}, JSON.stringify({ playlistUrl: playlistUrl }));
+
+}
+
 function fillPlaylist(){
     console.log("fillPlaylist");
     var counter =0;
     for(var i = 0; i < playlists_list.length; i++){
+
         if (counter == 0){
             var newPlaylist = document.createElement("div");
             newPlaylist.className = "row";
             counter++;
         }
         var newCard = document.createElement("div");
+        newCard.id = playlists_list[i]["url"];
+        newCard.onclick = function(){playPlaylist(this.id)};
         newCard.className = "col";
         newCard.innerHTML = `
         <div class="card" style="width: 18rem; margin-top:1rem;">

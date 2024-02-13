@@ -106,6 +106,59 @@ public class PlayerManager {
 
     }
 
+    public void loadAndPlay(Guild guild, String trackUrl) {
+        final GuildMusicManager musicManager = getGuildMusicManager(guild);
+
+
+        audioPlayerManager.loadItemOrdered(musicManager, trackUrl, new AudioLoadResultHandler() {
+            @Override
+            public void trackLoaded(AudioTrack audioTrack) {
+                musicManager.scheduler.queue(audioTrack);
+                // For updating queue
+                trackQeueUpdateService.updateQueue(musicManager.scheduler.queue);
+            }
+
+            @Override
+            public void playlistLoaded(AudioPlaylist audioPlaylist) {
+                List<AudioTrack> tracks = audioPlaylist.getTracks();
+
+
+                System.out.println(tracks);
+                if(!tracks.isEmpty()){
+                    if (trackUrl.contains("list")) {
+
+                        for (AudioTrack track : tracks) {
+                            musicManager.scheduler.queue(track);
+                        }
+
+                    }
+                    else {
+                        musicManager.scheduler.queue(tracks.get(0));
+
+                    }
+                    trackQeueUpdateService.updateQueue(musicManager.scheduler.queue);
+
+                }
+
+
+
+            }
+
+            @Override
+            public void noMatches() {
+
+            }
+
+            @Override
+            public void loadFailed(FriendlyException e) {
+
+            }
+        });
+
+    }
+
+
+
 
 
     public Playlist getplaylist(TextChannel textChannel, String trackUrl) throws InterruptedException {

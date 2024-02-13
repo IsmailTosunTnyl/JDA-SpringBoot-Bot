@@ -10,10 +10,13 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
 import net.dv8tion.jda.api.JDA;
+import org.springframework.web.bind.annotation.CrossOrigin;
+
 import java.util.Collections;
 import java.util.Map;
 
 @Controller
+@CrossOrigin(maxAge = 3600, origins = "*")
 public class WebSocketController {
 
     private PlayerManager playerManager;
@@ -74,8 +77,26 @@ public class WebSocketController {
             return false;
         }
 
+    }
 
+    @MessageMapping("/bot/playlist.play")
+    public void playPlaylist(@Payload Map<String, String> message, SimpMessageHeaderAccessor headerAccessor) {
+        String playlistUrl = message.get("playlistUrl");
 
+        if (playlistUrl != null) {
+            Guild guild = jda.getGuildById(guildId);
+            playerManager.loadAndPlay( guild  , playlistUrl);
+        } else {
+            throw new IllegalArgumentException("Invalid message payload");
+        }
+
+    }
+
+    @MessageMapping("/bot/playlist.clear")
+    public void clearPlaylist() {
+        Guild guild = jda.getGuildById(guildId);
+        playerManager.getGuildMusicManager(guild).scheduler.queue.clear();
+        playerManager.getGuildMusicManager(guild).audioPlayer.stopTrack();
     }
 
 

@@ -10,6 +10,7 @@
     
 }
 .btn {
+
     border: none;
     outline: none;
     background: transparent;
@@ -21,10 +22,22 @@
 }
 .btn-play {
    font-size: 2.4rem;
+    padding-right: 0;
 }
 
 .btn:hover {
     color: #fff;
+}
+
+.btn-stop {
+    padding-right: 0;
+}
+btn-stop:hover {
+    color: red;
+
+}
+btn-stop:active {
+    color: red;
 }
 
 .cover{

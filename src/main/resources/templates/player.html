@@ -54,7 +54,7 @@
                         <img  src="http://img.youtube.com/vi/yJpJCZYTL74/maxresdefault.jpg" class="d-block w-100 cover" alt="...">
                       </div>
                     </div>
-                    <button class="carousel-control-prev" onclick="previousSong()" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                    <button class="carousel-control-prev" onclick="clearList()" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
                       <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                       <span class="visually-hidden">Previous</span>
                     </button>
@@ -77,7 +77,7 @@
                   <div class="row">
                     <div class="col">
                       <div>
-                        <button class="btn" onclick="previousSong()"><i class="fa fa-backward"></i></button>
+                        <button class="btn btn-stop" onclick="clearList()"><i class="fa fa-stop"></i></button>
                         <button class="btn btn-play" onclick="playPause()"><i id="playPauseIcon" class="fa fa-play"></i></button>
                         <button class="btn " onclick="nextSong()"><i class="fa fa-forward"></i></button>
                       </div>
