@@ -43,4 +43,4 @@ jobs:
       
         run: |
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key ${HOSTNAME} "docker stop jda-spring || true && docker rm jda-spring || true && docker rmi ismailtosun/jda-spring || true &&docker run -d -p 3131:8081 --name jda-spring -e GUILD_ID=${{secrets.GUILD_ID}} -e MONGO_URI=${{secrets.MONGO_URI}} -e TOKEN=${{secrets.TOKEN}}  ismailtosun/jda-spring:latest"
+          ssh -o StrictHostKeyChecking=no -i private_key ${HOSTNAME} "sudo docker stop jda-spring || true && sudo docker rm jda-spring || true && sudo docker rmi ismailtosun/jda-spring || true && sudo docker run -d -p 3131:8081 --name jda-spring -e GUILD_ID=${{secrets.GUILD_ID}} -e MONGO_URI='${{secrets.MONGO_URI}}' -e TOKEN='${{secrets.TOKEN}}' ismailtosun/jda-spring:latest "
