@@ -90,4 +90,14 @@ public class TrackScheduler extends AudioEventAdapter {
         trackQeueUpdateService.updateQueue(queue);
     }
 
+    public void shuffleQueue() {
+        List<AudioTrack> tracks = new ArrayList<>(queue);
+        queue.clear();
+        while (!tracks.isEmpty()) {
+            int index = (int) (Math.random() * tracks.size());
+            queue.offer(tracks.remove(index));
+        }
+        trackQeueUpdateService.updateQueue(queue);
+    }
+
 }

@@ -5,6 +5,7 @@ var tracks_container = document.getElementById("tracks-container");
 var carousel = new bootstrap.Carousel(myCarousel)
 var slider = document.getElementById("trackSlider");
 var playPauseButton = document.getElementById("playPauseIcon");
+const shuffleIcon = document.getElementById("shuffleIcon");
 playlists_list = JSON.parse( document.currentScript.getAttribute('playlists'));
 tracks_list = JSON.parse( document.currentScript.getAttribute('tracks'));
 var ispaused = false;
@@ -102,6 +103,12 @@ function playPause(){
 function playPlaylist(playlistUrl){
     stompClient.send('/app/bot/playlist.play', {}, JSON.stringify({ playlistUrl: playlistUrl }));
 
+}
+
+function shuffle(){
+    stompClient.send('/app/bot/playlist.shuffle');
+    shake(shuffleIcon);
+    shake(tracks_container);
 }
 
 function fillPlaylist(){

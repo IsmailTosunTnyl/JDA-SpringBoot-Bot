@@ -31,13 +31,20 @@
 
 .btn-stop {
     padding-right: 0;
+    padding-left: 0;
 }
-btn-stop:hover {
+.btn-stop:hover {
     color: red;
 
 }
-btn-stop:active {
-    color: red;
+
+.btn-shuffle {
+    padding-right: 0.5rem;
+    font-size: 1rem;
+    padding-top: 1rem;
+}
+.btn-shuffle:hover {
+    color: yellow;
 }
 
 .cover{

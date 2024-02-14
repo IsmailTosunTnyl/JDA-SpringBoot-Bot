@@ -1,18 +1,23 @@
 package net.ismailtosun.discordbotultimate.Controllers;
 
 
+import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.entities.Guild;
 import net.ismailtosun.discordbotultimate.AudioPlayer.PlayerManager;
+import net.ismailtosun.discordbotultimate.Entity.Track;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 import net.dv8tion.jda.api.JDA;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -22,11 +27,14 @@ public class WebSocketController {
     private PlayerManager playerManager;
     private JDA jda;
 
+    private final SimpMessageSendingOperations messagingTemplate;
+
     @Value("${spring.data.guild.id}")
     private String guildId;
-    public WebSocketController(PlayerManager playerManager, JDA jda) {
+    public WebSocketController(PlayerManager playerManager, JDA jda, SimpMessageSendingOperations messagingTemplate) {
         this.playerManager = playerManager;
         this.jda = jda;
+        this.messagingTemplate = messagingTemplate;
     }
     @MessageMapping("/bot/song.changeById")
     public void playTrack(@Payload Map<String, String> message, SimpMessageHeaderAccessor headerAccessor) {
@@ -97,6 +105,30 @@ public class WebSocketController {
         Guild guild = jda.getGuildById(guildId);
         playerManager.getGuildMusicManager(guild).scheduler.queue.clear();
         playerManager.getGuildMusicManager(guild).audioPlayer.stopTrack();
+    }
+
+    @MessageMapping("/bot/playlist.shuffle")
+    public void shufflePlaylist() {
+        Guild guild = jda.getGuildById(guildId);
+        playerManager.musicManagers.get(guild.getIdLong()).scheduler.shuffleQueue();
+
+        List<Track> trackList = new ArrayList<>();
+
+        if (!playerManager.getGuildMusicManager(guild).scheduler.queue.isEmpty()) {
+            for (AudioTrack audioTrack : playerManager.getGuildMusicManager(guild).scheduler.queue) {
+
+                trackList.add(new Track(audioTrack.getInfo().uri,
+                        audioTrack.getInfo().title,
+                        audioTrack.getInfo().author,
+                        audioTrack.getDuration(),
+                        audioTrack.getPosition()));
+            }
+
+        }
+        System.out.println("Shuffled queue: " + trackList);
+        messagingTemplate.convertAndSend("/bot/playlist", trackList);
+
+
     }
 
 
