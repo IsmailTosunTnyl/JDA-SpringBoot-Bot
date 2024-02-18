@@ -39,6 +39,7 @@ public class TrackScheduler extends AudioEventAdapter {
         else {
             BotConfiguration.jda.getPresence().setActivity(Activity.customStatus("Playing: " + track.getInfo().title));
         }
+
     }
 
     public void nextTrack() {
@@ -97,6 +98,16 @@ public class TrackScheduler extends AudioEventAdapter {
             int index = (int) (Math.random() * tracks.size());
             queue.offer(tracks.remove(index));
         }
+        trackQeueUpdateService.updateQueue(queue);
+    }
+
+    public void playNext(AudioTrack track) {
+
+        // place the track at the front of the queue
+        List<AudioTrack> tracks = new ArrayList<>(queue);
+        queue.clear();
+        queue.offer(track);
+        queue.addAll(tracks);
         trackQeueUpdateService.updateQueue(queue);
     }
 

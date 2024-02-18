@@ -50,15 +50,20 @@ public class PlayerManager {
             });
     }
 
-    public void loadAndPlay(TextChannel textChannel, String trackUrl) {
+    public void loadAndPlay(TextChannel textChannel, String trackUrl,boolean playNext) {
         final GuildMusicManager musicManager = getGuildMusicManager(textChannel.getGuild());
-
 
         audioPlayerManager.loadItemOrdered(musicManager, trackUrl, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack audioTrack) {
-                musicManager.scheduler.queue(audioTrack);
-                // For updating queue
+
+                if(playNext){
+
+                    musicManager.scheduler.playNext(audioTrack);
+                }
+                else {
+                    musicManager.scheduler.queue(audioTrack);
+                }
                 trackQeueUpdateService.updateQueue(musicManager.scheduler.queue);
 
 
@@ -69,19 +74,23 @@ public class PlayerManager {
             public void playlistLoaded(AudioPlaylist audioPlaylist) {
                 List<AudioTrack> tracks = audioPlaylist.getTracks();
 
-
-                System.out.println(tracks);
                 if(!tracks.isEmpty()){
                     if (trackUrl.contains("list")) {
                         textChannel.sendMessage("Adding playlist to queue: " + audioPlaylist.getName()).queue();
 
                         for (AudioTrack track : tracks) {
-                            musicManager.scheduler.queue(track);
+                            if (playNext)
+                                musicManager.scheduler.playNext(track);
+                            else
+                                musicManager.scheduler.queue(track);
                         }
 
                     }
                     else {
-                        musicManager.scheduler.queue(tracks.get(0));
+                       if (playNext)
+                           musicManager.scheduler.playNext(tracks.get(0));
+                       else
+                           musicManager.scheduler.queue(tracks.get(0));
 
                     }
                     trackQeueUpdateService.updateQueue(musicManager.scheduler.queue);
@@ -106,14 +115,19 @@ public class PlayerManager {
 
     }
 
-    public void loadAndPlay(Guild guild, String trackUrl) {
+    public void loadAndPlay(Guild guild, String trackUrl,boolean playNext) {
         final GuildMusicManager musicManager = getGuildMusicManager(guild);
 
 
         audioPlayerManager.loadItemOrdered(musicManager, trackUrl, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack audioTrack) {
-                musicManager.scheduler.queue(audioTrack);
+                if(playNext){
+                    musicManager.scheduler.playNext(audioTrack);
+                }
+                else {
+                    musicManager.scheduler.queue(audioTrack);
+                }
                 // For updating queue
                 trackQeueUpdateService.updateQueue(musicManager.scheduler.queue);
             }
