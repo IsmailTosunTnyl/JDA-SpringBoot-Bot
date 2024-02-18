@@ -102,7 +102,7 @@ function playPause(){
 
 function playPlaylist(playlistUrl){
     stompClient.send('/app/bot/playlist.play', {}, JSON.stringify({ playlistUrl: playlistUrl }));
-
+    shake(document.getElementById(playlistUrl))
 }
 
 function shuffle(){
@@ -119,23 +119,31 @@ function fillPlaylist(){
         if (counter == 0){
             var newPlaylist = document.createElement("div");
             newPlaylist.className = "row";
-            counter++;
+
         }
+        counter++;
         var newCard = document.createElement("div");
         newCard.id = playlists_list[i]["url"];
         newCard.onclick = function(){playPlaylist(this.id)};
         newCard.className = "col";
         newCard.innerHTML = `
-        <div class="card" style="width: 18rem; margin-top:1rem;">
-            <img src="`+extractVideoCoverFromUrl(playlists_list[i]["tracks"][0]["url"])+`" class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title"> ${playlists_list[i]["name"]} </h5>
-                <h5 class="card-title"> ${playlists_list[i]["tracks"].length } Tracks </h5>
+
+        <div class="playlist-card-container card" >
+                <img class="playlist-card-image" src="`+extractVideoCoverFromUrl(playlists_list[i]["tracks"][0]["url"])+`" alt="..." >
+                <div class="playlist-card-nav">
+                   <a style="text-decoration:none; color:inherit" href="playlists_list[i]["URL"]"> <i class="fa fa-link playlist-icons" style="margin: 1rem;"></i> </a>
+                </div>
+                <div class="playlist-card-button">
+                   <button class="playlist-icons" style="background: none; border:none"> <i class="material-icons playlist-icons" style="font-size:3rem" >play_circle</i> </button>
+                </div>
+                <div class="playlist-card-title"><p > ${playlists_list[i]["name"]}</p></div>
+
             </div>
-        </div>
         `
         newPlaylist.appendChild(newCard);
+        console.log(counter)
         if (counter == 4){
+            console.log("sadasdass")
             counter = 0;
             playlist_container.appendChild(newPlaylist);
         }

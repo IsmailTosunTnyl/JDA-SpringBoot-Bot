@@ -189,7 +189,68 @@ font-size: 1rem;
     }
 }
 
+/* PlayList Card CSS */
 
+.playlist-card-container {
+  position: relative;
+  width: 18rem;
+  height: 25vh;
+  /* background shadow*/
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  color: #3d3c3c;
+  margin-top:1rem;
+}
+.playlist-card-container:hover {
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);
+    transition: 0.5s;
+    color: #070707;
+    overflow: visible;
+}
+.playlist-card-image{
+    width: 100%;
+    height: 100%;
+    border-radius:10px;
+}
+.playlist-card-image:hover{
+    opacity: 0.5;
+    transition: 0.5s;
 
+}
+.playlist-icons:hover{
+    color: #ffffff;
+    font-size: 4rem;
+    transition: 0.5s;
+}
+
+.playlist-card-nav{
+    position: absolute;
+    right: 0.2rem;
+    top: 0.2rem;
+    font-size: 1.5rem;
+    text-shadow: 2px 0 #fff, -2px 0 #fff, 0 2px #fff, 0 -2px #fff,
+                     1px 1px #fff, -1px -1px #fff, 1px -1px #fff, -1px 1px #fff;
+}
+.playlist-card-button{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 18px;
+}
+
+.playlist-card-title{
+    position: absolute;
+    max-height: 5vh;
+    width: 100%;
+    text-align: center;
+    transform: translate(-50%, -50%);
+    font-size: 18px;
+    left: 50%;
+    top: 12rem;
+    overflow: hidden;
+    text-shadow: 2px 0 #fff, -2px 0 #fff, 0 2px #fff, 0 -2px #fff,
+                 1px 1px #fff, -1px -1px #fff, 1px -1px #fff, -1px 1px #fff;
+}
 
 
