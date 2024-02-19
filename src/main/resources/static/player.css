@@ -142,6 +142,9 @@ body::before {
 .title-text{
     overflow: hidden;
     text-overflow: ellipsis;
+    height: 100%;
+    text-shadow: 0.5px 0 #c5c5c5, -0.5px 0 #c5c5c5, 0 1px #c5c5c5, 0 -0.5px #c5c5c5,
+    0.5px 0.5px #c5c5c5, -0.5px -0.5px #c5c5c5, 0.5px -0.5px #c5c5c5, -0.5px 0.5px #c5c5c5;
 }
 
 .list-item{

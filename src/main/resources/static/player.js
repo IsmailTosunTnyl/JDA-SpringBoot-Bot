@@ -122,6 +122,7 @@ function fillPlaylist(){
 
         }
         counter++;
+
         var newCard = document.createElement("div");
         newCard.id = playlists_list[i]["url"];
         newCard.onclick = function(){playPlaylist(this.id)};
@@ -131,7 +132,7 @@ function fillPlaylist(){
         <div class="playlist-card-container card" >
                 <img class="playlist-card-image" src="`+extractVideoCoverFromUrl(playlists_list[i]["tracks"][0]["url"])+`" alt="..." >
                 <div class="playlist-card-nav">
-                   <a style="text-decoration:none; color:inherit" href="playlists_list[i]["URL"]"> <i class="fa fa-link playlist-icons" style="margin: 1rem;"></i> </a>
+                   <a style="text-decoration:none; color:inherit" href="`+ playlists_list[i]['url'] +` "> <i class="fa fa-link playlist-icons" style="margin: 1rem;"></i> </a>
                 </div>
                 <div class="playlist-card-button">
                    <button class="playlist-icons" style="background: none; border:none"> <i class="material-icons playlist-icons" style="font-size:3rem" >play_circle</i> </button>
@@ -148,9 +149,20 @@ function fillPlaylist(){
             playlist_container.appendChild(newPlaylist);
         }
     }
+
+
+
     if (counter != 0){
-
-
+        // if a row is not complete, add empty columns
+        for (var i = counter; i < 4; i++){
+            console.log("adding empty column")
+            var newCard = document.createElement("div");
+            newCard.className = "col";
+            newCard.innerHTML = `
+            <div style="width: 18rem; background-color: transparent;" ></div>
+                       `
+            newPlaylist.appendChild(newCard);
+        }
         playlist_container.appendChild(newPlaylist);
     }
 }

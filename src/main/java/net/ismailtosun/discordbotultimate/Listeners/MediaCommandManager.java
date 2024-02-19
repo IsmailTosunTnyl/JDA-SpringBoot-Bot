@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class CommandManager extends ListenerAdapter {
+public class MediaCommandManager extends ListenerAdapter {
 
 
     private final PlayerManager playerManager;
@@ -28,7 +28,7 @@ public class CommandManager extends ListenerAdapter {
     private final PlaylistRepository playlistRepository;
 
 
-    public CommandManager(PlayerManager playerManager, SimpMessageSendingOperations messagingTemplate, PlaylistRepository playlistRepository) {
+    public MediaCommandManager(PlayerManager playerManager, SimpMessageSendingOperations messagingTemplate, PlaylistRepository playlistRepository) {
         this.playerManager = playerManager;
         this.messagingTemplate = messagingTemplate;
         this.playlistRepository = playlistRepository;
@@ -66,7 +66,7 @@ public class CommandManager extends ListenerAdapter {
                 handlePlayCommand(event,true);
                 break;
             default:
-                event.reply("Invalid command!").queue();
+                break;
         }
 
     }
