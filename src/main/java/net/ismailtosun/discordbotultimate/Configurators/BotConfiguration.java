@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.ismailtosun.discordbotultimate.AudioPlayer.PlayerManager;
+import net.ismailtosun.discordbotultimate.Listeners.Commands;
 import net.ismailtosun.discordbotultimate.Listeners.MediaCommandManager;
 import net.ismailtosun.discordbotultimate.Listeners.MessageCreateListener;
 import net.ismailtosun.discordbotultimate.Listeners.UtilsCommandsManager;
@@ -42,9 +43,10 @@ public class BotConfiguration {
 
         JDA jda = JDABuilder.createDefault(token)
                 .enableIntents(GatewayIntent.MESSAGE_CONTENT)
-                .addEventListeners(new MessageCreateListener(),
+                .addEventListeners(
                                     new MediaCommandManager(playerManager,messagingTemplate,playlistRepository),
-                                   new UtilsCommandsManager(playlistRepository)
+                                   new UtilsCommandsManager(playlistRepository),
+                                    new Commands()
                        )
                 .build();
         BotConfiguration.jda= jda;

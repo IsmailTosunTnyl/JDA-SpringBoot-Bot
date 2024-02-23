@@ -45,28 +45,28 @@ public class UtilsCommandsManager extends ListenerAdapter {
     }
 
     private void handleDeleteCommand(SlashCommandInteractionEvent event) {
-        int count = 1;
+        int count = 2;
         if(event.getOption("messagecount") != null){
             count = event.getOption("messagecount").getAsInt();
         }
-        event.getChannel().getHistory().retrievePast(count).queue(messages -> {
-            event.getChannel().asTextChannel().deleteMessages(messages).queue();
+        try {
+            event.getChannel().getHistory().retrievePast(count).queue(messages -> {
+                event.getChannel().asTextChannel().deleteMessages(messages).queue();
 
-        });
-        // send a clean up message with gif
-        String gif = gifs[(int) (Math.random() * gifs.length)];
-        System.out.println(gif);
-        event.getChannel().asTextChannel().sendMessage("Cleaning up...").queue(message -> message.editMessage(gif).queue());
-    }
+            });
+
+            String gif = gifs[(int) (Math.random() * gifs.length)];
+
+            event.reply(gif).queue();
+        }
+        catch (Exception e){
+            event.reply("I can't delete messages older than 14 days").queue();
+        }
 
 
-    @Override
-    public void onGuildReady(GuildReadyEvent event) {
-        List<CommandData> commandDatas = new ArrayList<>();
-
-        commandDatas.add(Commands.slash("delete","Delete message from channel")
-                .addOption(OptionType.INTEGER,"messagecount","Number of messages to delete",false));
-        event.getGuild().updateCommands().addCommands(commandDatas).queue();
 
     }
+
+
+
 }
