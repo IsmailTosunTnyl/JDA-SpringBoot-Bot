@@ -8,11 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
-public class TrackQeueUpdateService {
+public class TrackQueueUpdateService {
     private final SimpMessageSendingOperations messagingTemplate;
 
 
-    public TrackQeueUpdateService(SimpMessageSendingOperations messagingTemplate) {
+    public TrackQueueUpdateService(SimpMessageSendingOperations messagingTemplate) {
         this.messagingTemplate = messagingTemplate;
     }
 
