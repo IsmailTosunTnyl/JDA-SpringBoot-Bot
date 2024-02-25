@@ -5,10 +5,7 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.ismailtosun.discordbotultimate.AudioPlayer.PlayerManager;
-import net.ismailtosun.discordbotultimate.Listeners.Commands;
-import net.ismailtosun.discordbotultimate.Listeners.MediaCommandManager;
-import net.ismailtosun.discordbotultimate.Listeners.MessageCreateListener;
-import net.ismailtosun.discordbotultimate.Listeners.UtilsCommandsManager;
+import net.ismailtosun.discordbotultimate.Listeners.*;
 import net.ismailtosun.discordbotultimate.Repository.PlaylistRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,7 +43,8 @@ public class BotConfiguration {
                 .addEventListeners(
                                     new MediaCommandManager(playerManager,messagingTemplate,playlistRepository),
                                    new UtilsCommandsManager(playlistRepository),
-                                    new Commands()
+                                    new SlashCommands(),
+                        new SoundPadCommandManager(playerManager)
                        )
                 .build();
         BotConfiguration.jda= jda;

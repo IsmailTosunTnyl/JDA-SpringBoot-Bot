@@ -137,7 +137,7 @@ public class MediaCommandManager extends ListenerAdapter {
         }
         String song = event.getOption("song").getAsString();
         event.getGuild().getAudioManager().openAudioConnection(channel);
-        playerManager.loadAndPlay(event.getChannel().asTextChannel(), getURI(song),playNext);
+        playerManager.loadAndPlay(event.getGuild(), getURI(song),playNext,false);
         if (song.contains("playlist")) {
             Playlist existingPlaylist = playlistRepository.findById(song).orElse(playlistRepository.findByName(playerManager.getplaylist(event.getChannel().asTextChannel(), song).getName()));
             if (existingPlaylist == null) {

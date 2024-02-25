@@ -49,72 +49,9 @@ public class PlayerManager {
             });
     }
 
-    public void loadAndPlay(TextChannel textChannel, String trackUrl,boolean playNext) {
-        final GuildMusicManager musicManager = getGuildMusicManager(textChannel.getGuild());
-
-        audioPlayerManager.loadItemOrdered(musicManager, trackUrl, new AudioLoadResultHandler() {
-            @Override
-            public void trackLoaded(AudioTrack audioTrack) {
-
-                if(playNext){
-
-                    musicManager.scheduler.playNext(audioTrack);
-                }
-                else {
-                    musicManager.scheduler.queue(audioTrack);
-                }
-                trackQueueUpdateService.updateQueue(musicManager.scheduler.queue);
 
 
-                textChannel.sendMessage("Adding to queue: " + audioTrack.getInfo().title).queue();
-            }
-
-            @Override
-            public void playlistLoaded(AudioPlaylist audioPlaylist) {
-                List<AudioTrack> tracks = audioPlaylist.getTracks();
-
-                if(!tracks.isEmpty()){
-                    if (trackUrl.contains("list")) {
-                        textChannel.sendMessage("Adding playlist to queue: " + audioPlaylist.getName()).queue();
-
-                        for (AudioTrack track : tracks) {
-                            if (playNext)
-                                musicManager.scheduler.playNext(track);
-                            else
-                                musicManager.scheduler.queue(track);
-                        }
-
-                    }
-                    else {
-                       if (playNext)
-                           musicManager.scheduler.playNext(tracks.get(0));
-                       else
-                           musicManager.scheduler.queue(tracks.get(0));
-
-                    }
-                    trackQueueUpdateService.updateQueue(musicManager.scheduler.queue);
-                    textChannel.sendMessage("Adding to queue: " + tracks.get(0).getInfo().title).queue();
-
-                }
-
-
-
-            }
-
-            @Override
-            public void noMatches() {
-
-            }
-
-            @Override
-            public void loadFailed(FriendlyException e) {
-
-            }
-        });
-
-    }
-
-    public void loadAndPlay(Guild guild, String trackUrl,boolean playNext) {
+    public void loadAndPlay(Guild guild, String trackUrl,boolean playNext,boolean playNow) {
         final GuildMusicManager musicManager = getGuildMusicManager(guild);
 
 
@@ -126,6 +63,9 @@ public class PlayerManager {
                 }
                 else {
                     musicManager.scheduler.queue(audioTrack);
+                }
+                if (playNow) {
+                    musicManager.scheduler.nextTrack();
                 }
                 // For updating queue
                 trackQueueUpdateService.updateQueue(musicManager.scheduler.queue);

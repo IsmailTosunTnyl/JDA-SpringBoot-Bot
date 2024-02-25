@@ -93,7 +93,7 @@ public class WebSocketController {
 
         if (playlistUrl != null) {
             Guild guild = jda.getGuildById(guildId);
-            playerManager.loadAndPlay( guild  , playlistUrl, false);
+            playerManager.loadAndPlay( guild  , playlistUrl, false,false);
         } else {
             throw new IllegalArgumentException("Invalid message payload");
         }
