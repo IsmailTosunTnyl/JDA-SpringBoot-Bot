@@ -7,14 +7,65 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel = "stylesheet" href = "player.css">
-    <link rel="stylesheet" href="slider.css">
+    <link rel = "stylesheet" href = "../static/player.css">
+    <link rel="stylesheet" href="../static/slider.css">
 </head>
 <body>
+  
+
+  <div class="offcanvas offcanvas-top" tabindex="-1"  style="background-color: rgba(17, 18, 20, 0.799); color:white"   id="offcanvasTop" aria-labelledby="offcanvasTopLabel">
+    <div class="offcanvas-header">
+      <h5 id="offcanvasTopLabel" style="color: white; text-align:center; width:100%">SoundPad</h5>
+      <button type="button"  class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+      <div class="container">
+        <div class="row soundpad-row">
+          <div  class="col soundpad-col">
+            <button class="soundpad-button">AAAA
+              <i id="" class="fa fa-play soundpad-icon"></i>
+            </button>
+          </div>
+          <div class="col soundpad-col">
+            <button class="soundpad-button">AAAA</button>
+          </div>
+          <div class="col soundpad-col">
+            <button class="soundpad-button">AAAA</button>
+          </div>
+          <div class="col soundpad-col">
+            <button class="soundpad-button">AAAA</button>
+          </div>
+          <div class="col soundpad-col">
+            <button class="soundpad-button">AAAA</button>
+          </div>
+        </div>
+
+        <div class="row soundpad-row">
+          <div  class="col soundpad-col">
+            <button class="soundpad-button">AAAA</button>
+          </div>
+          <div class="col soundpad-col">
+            <button class="soundpad-button">AAAA</button>
+          </div>
+          <div class="col soundpad-col">
+            <button class="soundpad-button">AAAA</button>
+          </div>
+          <div class="col soundpad-col">
+            <button class="soundpad-button">AAAA</button>
+          </div>
+          <div class="col soundpad-col">
+            <button class="soundpad-button">AAAA</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
     <div class="container text-center ">
-      
+
         <div class="row " >
+
           <div class="col-3 song-list" >
 
             <h2 >Up Next</h2>
@@ -43,7 +94,12 @@
             </div>
 
           </div>
+
           <div class="col">
+              <div class="container-offcanvas" >
+                <button class="btn"  data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop"><i id="" class="material-icons"  style="font-size: 3rem;" >expand_more</i></button>
+                
+              </div>
             <div class="player-container" >
             
                 <div class="row" >
