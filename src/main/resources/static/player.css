@@ -9,6 +9,10 @@
     
     
 }
+::-webkit-scrollbar {
+    display: none;
+}
+
 .btn {
 
     border: none;
@@ -299,5 +303,6 @@ font-size: 1rem;
     transition: 0.1s;
     background-color: rgb(82, 75, 75);
 }
+
 
 
