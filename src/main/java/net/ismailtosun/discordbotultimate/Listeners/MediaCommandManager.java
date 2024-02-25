@@ -161,7 +161,10 @@ public class MediaCommandManager extends ListenerAdapter {
 
         // join the voice channel
         event.getGuild().getAudioManager().openAudioConnection(channel);
-        event.reply("Joined " + channel.getName()).queue();
+        event.getChannel().asTextChannel().sendMessage("Joined " + channel.getName()).queue();
+
+        // send the url for the bot UI
+        this.handleURLCommand(event);
         
     }
 
