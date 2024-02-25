@@ -1,4 +1,4 @@
-package net.ismailtosun.discordbotultimate.Controllers;
+package net.ismailtosun.discordbotultimate.Services;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
