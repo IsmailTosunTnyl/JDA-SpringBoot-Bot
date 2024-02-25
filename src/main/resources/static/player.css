@@ -1,7 +1,7 @@
 .player-container {
     position: relative;
     width: 100%;
-    height: 100vh;
+    height: 90vh;
     overflow: hidden;
     display: flex;
     align-items: center;
@@ -254,6 +254,50 @@ font-size: 1rem;
     overflow: hidden;
     text-shadow: 2px 0 #fff, -2px 0 #fff, 0 2px #fff, 0 -2px #fff,
                  1px 1px #fff, -1px -1px #fff, 1px -1px #fff, -1px 1px #fff;
+}
+
+/*SoundPad col dropdown*/
+.soundpad-col{
+    text-align: center;
+}
+.soundpad-row{
+    margin-top: 0.5rem;
+}
+.soundpad-row:first-child{
+    margin-top: 0;
+}
+.soundpad-button{
+    background-color: rgba(43, 45, 49, 1);
+    width: 100%;
+    max-width: 80%;
+    border-radius: 1rem;
+    position: relative;
+    height: 2.5rem;
+    color: white;
+
+}
+.soundpad-button:hover{
+    color: gray;
+}
+.soundpad-button:hover i{
+    visibility: visible;
+    color: white;
+    opacity: 1;
+    font-size: 1.5rem;
+    top:15%;
+    transition: 0.2s;
+
+}
+.soundpad-icon{
+    position: absolute;
+    left: 46%;
+    top:25%;
+    visibility: hidden;
+    opacity: 0.6;
+}
+.soundpad-button:active{
+    transition: 0.1s;
+    background-color: rgb(82, 75, 75);
 }
 
 
