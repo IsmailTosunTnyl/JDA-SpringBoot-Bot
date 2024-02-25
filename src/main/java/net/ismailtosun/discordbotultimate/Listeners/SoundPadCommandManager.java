@@ -30,7 +30,7 @@ public class SoundPadCommandManager extends ListenerAdapter {
 
     private void handleSoundPadCommand(SlashCommandInteractionEvent event) {
         //TODO fixed soundpad url for testing
-        String soundURL = "https://www.youtube.com/watch?v=VUfvRciny_Y";
+        String soundURL = "https://youtu.be/QODoH34xO8U";
 
 
         // get current playing track
