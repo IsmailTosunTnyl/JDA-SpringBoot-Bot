@@ -28,11 +28,20 @@ public class LiveDataService {
         this.playerManager = playerManager;
         jda = BotConfiguration.jda;
 
+
         sendCurrentTrack();
     }
 
     public void sendCurrentTrack() {
-        // get current track
+        // wait until jda is ready
+
+        while (jda == null || !jda.getStatus().equals(JDA.Status.CONNECTED)) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
 
 
         // send current track to the client every 1 second if the track is not null

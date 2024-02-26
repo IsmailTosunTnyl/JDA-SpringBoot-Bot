@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.repository.cdi.Eager;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 
 @Configuration
@@ -32,6 +33,9 @@ public class BotConfiguration {
     @Value("${token}")
     private String token;
 
+    @Value("${spring.data.guild.id}")
+    private String guildId;
+
     public static JDA jda;
 
 
@@ -42,9 +46,9 @@ public class BotConfiguration {
                 .enableIntents(GatewayIntent.MESSAGE_CONTENT)
                 .addEventListeners(
                                     new MediaCommandManager(playerManager,messagingTemplate,playlistRepository),
-                                   new UtilsCommandsManager(playlistRepository),
+                                    new UtilsCommandsManager(playlistRepository),
                                     new SlashCommands(),
-                        new SoundPadCommandManager(playerManager)
+                                    new SoundPadCommandManager(playerManager)
                        )
                 .build();
         BotConfiguration.jda= jda;
@@ -60,8 +64,9 @@ public class BotConfiguration {
     }
 
     @Bean
+    @Lazy
     public Guild guild() {
-        return jda.getGuildById("775351095748198442");
+        return jda.getGuildById(guildId);
     }
 
 }
