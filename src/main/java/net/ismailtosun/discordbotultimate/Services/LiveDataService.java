@@ -15,7 +15,7 @@ import java.util.List;
 @Service
 public class LiveDataService {
     private final SimpMessageSendingOperations messagingTemplate;
-    private final JDA jda;
+    private JDA jda;
     private  Guild guild ;
     private final PlayerManager playerManager;
 
@@ -26,7 +26,7 @@ public class LiveDataService {
     public LiveDataService(SimpMessageSendingOperations messagingTemplate, PlayerManager playerManager) {
         this.messagingTemplate = messagingTemplate;
         this.playerManager = playerManager;
-        jda = BotConfiguration.jda;
+        this.jda = BotConfiguration.jda;
 
 
         sendCurrentTrack();
@@ -35,10 +35,12 @@ public class LiveDataService {
     public void sendCurrentTrack() {
         // wait until jda is ready
 
-        while (jda == null || !jda.getStatus().equals(JDA.Status.CONNECTED)) {
+        while (this.jda == null ) {
             System.out.println("****Waiting for jda to be ready****");
             try {
                 Thread.sleep(1000);
+                this.jda = BotConfiguration.jda;
+                System.out.println(jda);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

@@ -28,6 +28,8 @@ public class BotConfiguration {
         this.playlistRepository = playlistRepository;
         this.messagingTemplate = messagingTemplate;
         playerManager=new PlayerManager(messagingTemplate);
+
+        System.out.println("BotConfiguration Bean creation finished");
     }
 
     @Value("${token}")
@@ -47,13 +49,14 @@ public class BotConfiguration {
                 .addEventListeners(
                                     new MediaCommandManager(playerManager,messagingTemplate,playlistRepository),
                                     new UtilsCommandsManager(playlistRepository),
-                                    new SlashCommands(),
-                                    new SoundPadCommandManager(playerManager)
+                                    new SlashCommands()
+                                    //new SoundPadCommandManager(playerManager)
                        )
                 .build();
         BotConfiguration.jda= jda;
         jda.getPresence().setActivity(net.dv8tion.jda.api.entities.Activity.playing("Leagues of Legends"));
-        System.out.println("JDA Bean creation finished");
+        System.out.println("JDA Bean creation finished "+jda.getStatus());
+
         return jda;
         
     }
