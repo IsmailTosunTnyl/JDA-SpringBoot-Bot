@@ -139,7 +139,7 @@ function fillPlaylist(){
                 </div>
                 <div class="playlist-card-title"><p > ${playlists_list[i]["name"]}</p></div>
 
-            </div>
+        </div>
         `
         newPlaylist.appendChild(newCard);
         console.log(counter)

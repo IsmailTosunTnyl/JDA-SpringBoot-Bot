@@ -13,6 +13,7 @@ public class SoundPadCommandManager extends ListenerAdapter {
     public SoundPadCommandManager(PlayerManager playerManager) {
         this.playerManager = playerManager;
     }
+
     @SneakyThrows
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
@@ -22,15 +23,25 @@ public class SoundPadCommandManager extends ListenerAdapter {
             case "soundpad":
                 handleSoundPadCommand(event);
                 break;
+            case "local":
+                handleLocalCommand(event);
+                break;
             default:
                 break;
         }
 
     }
 
+    private void handleLocalCommand(SlashCommandInteractionEvent event) {
+        // play local mp3 file
+
+        playerManager.loadAndPlay(event.getGuild(), "src/main/resources/audio/teknoloji.mp3",false,false);
+        event.reply("Playing local sound").queue();
+    }
+
     private void handleSoundPadCommand(SlashCommandInteractionEvent event) {
         //TODO fixed soundpad url for testing
-        String soundURL = "https://youtu.be/QODoH34xO8U";
+        String soundURL = "src/main/resources/audio/teknoloji.mp3";
 
 
         // get current playing track
@@ -44,8 +55,7 @@ public class SoundPadCommandManager extends ListenerAdapter {
         playerManager.getGuildMusicManager(event.getGuild()).scheduler.playNext(playintrackClone);
 
         // load the sound
-        playerManager.loadAndPlay(event.getGuild(), soundURL, true,true);
-
+        playerManager.loadAndPlay(event.getGuild(), soundURL, true, true);
 
 
         event.reply("Playing soundpad").queue();

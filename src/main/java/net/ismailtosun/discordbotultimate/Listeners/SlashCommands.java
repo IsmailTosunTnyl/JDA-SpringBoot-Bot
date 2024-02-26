@@ -29,6 +29,7 @@ public class SlashCommands extends ListenerAdapter {
         commands.add(Commands.slash("delete","Delete message from channel")
                 .addOption(OptionType.INTEGER,"messagecount","Number of messages to delete",true));
         commands.add(Commands.slash("soundpad","Play a soundpad"));
+        commands.add(Commands.slash("local","Play a soundpad"));
         System.out.println("MediaCommandManager.onGuildReady");
         event.getGuild().updateCommands().addCommands(commands).queue();
     }
