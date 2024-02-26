@@ -41,7 +41,7 @@ public class BotConfiguration {
 
     @Bean
     public JDA jda() {
-
+        System.out.println("JDA Bean creation started");
         JDA jda = JDABuilder.createDefault(token)
                 .enableIntents(GatewayIntent.MESSAGE_CONTENT)
                 .addEventListeners(
@@ -53,6 +53,7 @@ public class BotConfiguration {
                 .build();
         BotConfiguration.jda= jda;
         jda.getPresence().setActivity(net.dv8tion.jda.api.entities.Activity.playing("Leagues of Legends"));
+        System.out.println("JDA Bean creation finished");
         return jda;
         
     }
