@@ -39,13 +39,13 @@ public class LiveDataService {
         new Thread(() -> {
             while (true) {
                 try {
+                    Thread.sleep(2000);
                     if (guild == null) {
 
-                        Thread.sleep(1000);
+                        Thread.sleep(2000);
                         guild = jda.getGuildById(guildId);
                         continue;
                     }
-                    Thread.sleep(1000);
                     if (guild.getAudioManager().getConnectedChannel() != null && playerManager.getGuildMusicManager(guild).audioPlayer.getPlayingTrack() != null) {
                         Track track = new Track();
                         track.setTitle(playerManager.getGuildMusicManager(guild).audioPlayer.getPlayingTrack().getInfo().title);
@@ -63,7 +63,9 @@ public class LiveDataService {
 
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+
                 }
+
             }
 
         }).start();

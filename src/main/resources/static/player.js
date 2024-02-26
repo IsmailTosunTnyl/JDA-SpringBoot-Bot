@@ -112,7 +112,7 @@ function shuffle(){
 }
 
 function fillPlaylist(){
-    console.log("fillPlaylist");
+
     var counter =0;
     for(var i = 0; i < playlists_list.length; i++){
 
@@ -142,9 +142,9 @@ function fillPlaylist(){
         </div>
         `
         newPlaylist.appendChild(newCard);
-        console.log(counter)
+
         if (counter == 4){
-            console.log("sadasdass")
+
             counter = 0;
             playlist_container.appendChild(newPlaylist);
         }
@@ -155,7 +155,7 @@ function fillPlaylist(){
     if (counter != 0){
         // if a row is not complete, add empty columns
         for (var i = counter; i < 4; i++){
-            console.log("adding empty column")
+
             var newCard = document.createElement("div");
             newCard.className = "col";
             newCard.innerHTML = `
@@ -192,7 +192,6 @@ function fillTracks(){
 
 function playTrack(trackId) {
     try {
-        console.log("Playing track: " + trackId);
         stompClient.send('/app/bot/song.changeById', {}, JSON.stringify({ trackId: trackId }));
     } catch (error) {
         console.error("Error sending message to WebSocket server:", error);
