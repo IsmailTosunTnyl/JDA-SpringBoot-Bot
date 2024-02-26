@@ -55,7 +55,7 @@ public class BotConfiguration {
                 .build();
         BotConfiguration.jda= jda;
         jda.getPresence().setActivity(net.dv8tion.jda.api.entities.Activity.playing("Leagues of Legends"));
-        System.out.println("JDA Bean creation finished "+jda.getStatus());
+        System.out.println("JDA Bean creation finished "+jda.getStatus()+" **");
 
         return jda;
         
