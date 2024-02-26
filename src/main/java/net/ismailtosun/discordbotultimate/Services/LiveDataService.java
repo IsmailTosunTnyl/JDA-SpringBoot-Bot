@@ -36,6 +36,7 @@ public class LiveDataService {
         // wait until jda is ready
 
         while (jda == null || !jda.getStatus().equals(JDA.Status.CONNECTED)) {
+            System.out.println("****Waiting for jda to be ready****");
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
