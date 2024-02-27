@@ -3,16 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="soundpad-upload.css" > 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+   
     <title>File Upload</title>
 </head>
-    <body>
-        <h2>Upload a File</h2>
-        <form action="/soundpad/upload" method="post" enctype="multipart/form-data">
-            <input type="file" name="file" id="file" accept=".mp3, .wav, .ogg">
-            <br><br>
-            <button type="submit">Upload</button>
+
+<body>
+    <div class="wrapper">
+        
+        <div class="file-upload">
+          <form class="soundpad-form" action="/soundpad/upload" id="uploadForm" method="post" enctype="multipart/form-data">
+            <input type="file" name="file" id="file" accept=".mp3, .wav, .ogg" />
+            <i class="fa fa-arrow-up"></i>
         </form>
-    </body>
+          
+        </div>
+      </div>
+    
+            
+    <script>
+      document.getElementById('file').addEventListener('change', function() {
+          var form = document.getElementById('uploadForm');
+          form.submit();
+      });
+    </script>
+</body>
+
 </html>
 
 

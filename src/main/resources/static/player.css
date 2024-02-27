@@ -307,4 +307,58 @@ font-size: 1rem;
 }
 
 
+.soundpad-add-button{
+    position: absolute;
+    right: 2rem;
+    bottom: 1rem;
+    width: 100%;
+}
+
+.soundpad-add-button i{
+    font-size: 5rem;
+    color: rgb(184, 177, 177);
+    float: right;
+    
+}
+
+@media (max-width: 1350px) {
+    .soundpad-add-button {
+        right: 1rem; /* Küçük ekranlarda sağdan 1rem'e ayarla */
+        bottom: 0.5rem; /* Küçük ekranlarda alttan 0.5rem'e ayarla */
+    }
+
+    .soundpad-add-button i {
+        font-size: 3rem; /* Küçük ekranlarda ikon boyutunu küçült */
+    }
+}
+
+@media (max-width: 900px) {
+    .soundpad-add-button {
+        right: 1rem; /* Küçük ekranlarda sağdan 1rem'e ayarla */
+        bottom: 0.5rem; /* Küçük ekranlarda alttan 0.5rem'e ayarla */
+    }
+
+    .soundpad-add-button i {
+        font-size: 2rem; /* Küçük ekranlarda ikon boyutunu küçült */
+    }
+}
+
+.soundpad-add-button i:hover{
+    color: wheat;
+    transition: 1s;
+}
+
+@keyframes rotateAndMove {
+    from {
+        transform: translate(0) rotate(360deg); /* Başlangıç durumu */
+    }
+    to {
+        transform: translate(-100%, 0) rotate(0deg); /* Bitiş durumu */
+    }
+}
+
+.soundpad-add-button i:hover {
+    animation: rotateAndMove 5s linear infinite; 
+}
+
 
