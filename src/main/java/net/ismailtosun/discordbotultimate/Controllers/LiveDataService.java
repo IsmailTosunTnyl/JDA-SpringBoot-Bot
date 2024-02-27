@@ -1,16 +1,13 @@
-package net.ismailtosun.discordbotultimate.Services;
+package net.ismailtosun.discordbotultimate.Controllers;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.ismailtosun.discordbotultimate.AudioPlayer.PlayerManager;
-import net.ismailtosun.discordbotultimate.Configurators.BotConfiguration;
 import net.ismailtosun.discordbotultimate.Entity.Track;
+import net.ismailtosun.discordbotultimate.Configurators.BotConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class LiveDataService {
@@ -38,7 +35,7 @@ public class LiveDataService {
         while (this.jda == null ) {
             System.out.println("****Waiting for jda to be ready****");
             try {
-                Thread.sleep(1000);
+                Thread.sleep(2000);
                 this.jda = BotConfiguration.jda;
                 System.out.println(jda);
             } catch (InterruptedException e) {

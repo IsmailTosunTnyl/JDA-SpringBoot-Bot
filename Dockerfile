@@ -5,7 +5,7 @@
 # (I think it's better to use a slim image with Maven already installed instead
 #  than ./mvnw. Otherwise you could need to give execution rights to your file
 #  with instructions like "RUN chmod +x mvnw".)
-FROM maven:latest AS builder
+FROM maven:3.8.8 AS builder
 
 # Set your preferred working directory
 # (This tells the image what the "current" directory is for the rest of the build)

@@ -1,5 +1,6 @@
 package net.ismailtosun.discordbotultimate.Configurators;
 
+import com.austinv11.servicer.Service;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
@@ -10,10 +11,11 @@ import net.ismailtosun.discordbotultimate.Repository.PlaylistRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.data.repository.cdi.Eager;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.stereotype.Repository;
 
 @Configuration
 public class BotConfiguration {
@@ -23,43 +25,38 @@ public class BotConfiguration {
 
     private PlayerManager playerManager;
 
+    public static JDA jda;
+
     @Autowired
     public BotConfiguration(PlaylistRepository playlistRepository, SimpMessageSendingOperations messagingTemplate) {
         this.playlistRepository = playlistRepository;
         this.messagingTemplate = messagingTemplate;
         playerManager=new PlayerManager(messagingTemplate);
-
-        System.out.println("BotConfiguration Bean creation finished");
     }
 
     @Value("${token}")
     private String token;
 
-    @Value("${spring.data.guild.id}")
-    private String guildId;
-
-    public static JDA jda;
-
 
     @Bean
     public JDA jda() {
-        System.out.println("JDA Bean creation started");
+        System.out.println("JDABuilder is creating");
         JDA jda = JDABuilder.createDefault(token)
                 .enableIntents(GatewayIntent.MESSAGE_CONTENT)
                 .addEventListeners(
                                     new MediaCommandManager(playerManager,messagingTemplate,playlistRepository),
-                                    new UtilsCommandsManager(playlistRepository),
-                                    new SlashCommands()
-                                    //new SoundPadCommandManager(playerManager)
+                                   new UtilsCommandsManager(playlistRepository),
+                                    new SlashCommands(),
+                                    new SoundPadCommandManager(playerManager)
                        )
                 .build();
+        System.out.println("JDABuilder is created");
         BotConfiguration.jda= jda;
         jda.getPresence().setActivity(net.dv8tion.jda.api.entities.Activity.playing("Leagues of Legends"));
-        System.out.println("JDA Bean creation finished "+jda.getStatus()+" **");
-
         return jda;
         
     }
+
 
     @Bean
     @Lazy
@@ -68,9 +65,8 @@ public class BotConfiguration {
     }
 
     @Bean
-    @Lazy
     public Guild guild() {
-        return jda.getGuildById(guildId);
+        return jda.getGuildById("775351095748198442");
     }
 
 }
