@@ -239,7 +239,8 @@ function fillSoundpad(){
 
     // extend the soundpad container to the bottom of the page
     const ofcanvasTop = document.getElementById("offcanvasTop");
-    ofcanvasTop.style.height = soundpad_container.offsetHeight*(rowCounter+1)    + "px";
+
+    ofcanvasTop.style.height = Math.max(soundpad_container.offsetHeight*(rowCounter+1),200)    + "px";
     console.log(soundpad_container.offsetHeight);
 
 
