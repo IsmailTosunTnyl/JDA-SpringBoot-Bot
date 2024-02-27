@@ -15,7 +15,7 @@ import java.util.List;
 @Service
 public class LiveDataService {
     private final SimpMessageSendingOperations messagingTemplate;
-    private final JDA jda;
+    private JDA jda;
     private  Guild guild ;
     private final PlayerManager playerManager;
 
@@ -26,26 +26,38 @@ public class LiveDataService {
     public LiveDataService(SimpMessageSendingOperations messagingTemplate, PlayerManager playerManager) {
         this.messagingTemplate = messagingTemplate;
         this.playerManager = playerManager;
-        jda = BotConfiguration.jda;
+        this.jda = BotConfiguration.jda;
+
 
         sendCurrentTrack();
     }
 
     public void sendCurrentTrack() {
-        // get current track
+        // wait until jda is ready
+
+        while (this.jda == null ) {
+            System.out.println("****Waiting for jda to be ready****");
+            try {
+                Thread.sleep(1000);
+                this.jda = BotConfiguration.jda;
+                System.out.println(jda);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
 
 
         // send current track to the client every 1 second if the track is not null
         new Thread(() -> {
             while (true) {
                 try {
+                    Thread.sleep(2000);
                     if (guild == null) {
 
-                        Thread.sleep(1000);
+                        Thread.sleep(2000);
                         guild = jda.getGuildById(guildId);
                         continue;
                     }
-                    Thread.sleep(1000);
                     if (guild.getAudioManager().getConnectedChannel() != null && playerManager.getGuildMusicManager(guild).audioPlayer.getPlayingTrack() != null) {
                         Track track = new Track();
                         track.setTitle(playerManager.getGuildMusicManager(guild).audioPlayer.getPlayingTrack().getInfo().title);
@@ -63,7 +75,9 @@ public class LiveDataService {
 
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+
                 }
+
             }
 
         }).start();
