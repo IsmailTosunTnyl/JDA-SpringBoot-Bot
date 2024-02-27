@@ -57,7 +57,7 @@ public class SoundPadFileUploadController {
 
 
         // Redirect back to the sound pad page
-        return "redirect:/soundpad/index";
+        return "redirect:/";
     }
 
 }

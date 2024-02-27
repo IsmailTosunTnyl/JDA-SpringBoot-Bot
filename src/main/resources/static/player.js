@@ -8,8 +8,11 @@ var playPauseButton = document.getElementById("playPauseIcon");
 const shuffleIcon = document.getElementById("shuffleIcon");
 playlists_list = JSON.parse( document.currentScript.getAttribute('playlists'));
 tracks_list = JSON.parse( document.currentScript.getAttribute('tracks'));
+soundpad_list = JSON.parse( document.currentScript.getAttribute('soundpadFiles'));
 var ispaused = false;
 var lastPosition = 0;
+
+
 
 // ************** Websocket ***************
 
@@ -190,6 +193,62 @@ function fillTracks(){
 
 }
 
+function fillSoundpad(){
+
+    var soundpad_container = document.getElementById("soundpad-container");
+    soundpad_container.innerHTML = "";
+    var soundpad_row = document.createElement("div");
+    soundpad_row.className = "row soundpad-row";
+    var counter = 0;
+    var rowCounter = 0;
+    for (var i = 0; i < soundpad_list.length; i++) {
+        if (counter == 0) {
+            soundpad_row = document.createElement("div");
+            soundpad_row.className = "row soundpad-row";
+        }
+        counter++;
+        var soundpad_col = document.createElement("div");
+        soundpad_col.className = "col soundpad-col";
+        var soundpad_button = document.createElement("button");
+        soundpad_button.className = "soundpad-button";
+        soundpad_button.onclick = function () {
+            playSoundpad(this.id)
+        };
+        soundpad_button.id = soundpad_list[i];
+        soundpad_button.innerHTML = soundpad_list[i].split(".")[0] + `<i class="fa fa-play soundpad-icon"></i>`;
+        soundpad_col.appendChild(soundpad_button);
+        soundpad_row.appendChild(soundpad_col);
+        if (counter == 4) {
+            rowCounter++;
+            counter = 0;
+            soundpad_container.appendChild(soundpad_row);
+        }
+    }
+    if (counter != 0) {
+        // if a row is not complete, add empty columns
+        for (var i = counter; i < 4; i++) {
+            var soundpad_col = document.createElement("div");
+            soundpad_col.className = "col soundpad-col";
+            soundpad_col.innerHTML = `
+            <div style="width: 100%; background-color: transparent;" ></div>
+                       `
+            soundpad_row.appendChild(soundpad_col);
+        }
+        soundpad_container.appendChild(soundpad_row);
+    }
+
+    // extend the soundpad container to the bottom of the page
+    const ofcanvasTop = document.getElementById("offcanvasTop");
+    ofcanvasTop.style.height = soundpad_container.offsetHeight*(rowCounter+1)    + "px";
+    console.log(soundpad_container.offsetHeight);
+
+
+}
+function playSoundpad(soundpadId) {
+    stompClient.send('/app/bot/soundpad.play', {}, JSON.stringify({ soundpadId: soundpadId }));
+    shake(document.getElementById(soundpadId));
+}
+
 function playTrack(trackId) {
     try {
         stompClient.send('/app/bot/song.changeById', {}, JSON.stringify({ trackId: trackId }));
@@ -203,6 +262,7 @@ window.onload = function(){
     fillPlaylist();
     fillTracks();
     connect();
+    fillSoundpad();
 }
 
 

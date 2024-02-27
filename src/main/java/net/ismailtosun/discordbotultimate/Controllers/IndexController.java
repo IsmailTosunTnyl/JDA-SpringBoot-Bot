@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,12 +70,46 @@ public class IndexController {
             }
 
         }
-        model.addAttribute("tracks", objectMapper.writeValueAsString(trackList));
 
+        // get soundpad tracks searching in the directory
+
+
+        ArrayList<String> soundpadFiles = listFilesInDirectory();
+
+
+        model.addAttribute("tracks", objectMapper.writeValueAsString(trackList));
+        model.addAttribute("soundpadFiles", objectMapper.writeValueAsString(soundpadFiles));
 
 
         return "player";
     }
+
+
+    public ArrayList<String>  listFilesInDirectory() {
+        // Create a File object representing the directory
+        File folder = new File(System.getProperty("user.dir")+File.separator+"src"+File.separator+"main"+File.separator+"resources"+File.separator+"audio");
+        ArrayList<String> filesList = new ArrayList<>();
+        // Check if the directory exists
+        if (folder.exists() && folder.isDirectory()) {
+            // Get the list of files in the directory
+            File[] files = folder.listFiles();
+
+            // Check if files is not null and contains elements
+            if (files != null && files.length > 0) {
+                // Iterate through the files and print their names
+                for (File file : files) {
+                    filesList.add(file.getName());
+                }
+            } else {
+                System.out.println("No files found in the directory.");
+            }
+        } else {
+            System.out.println("Specified directory does not exist or is not a directory.");
+        }
+
+        return filesList;
+    }
+
 
 
 

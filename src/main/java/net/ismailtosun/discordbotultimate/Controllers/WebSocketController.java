@@ -5,6 +5,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.entities.Guild;
 import net.ismailtosun.discordbotultimate.AudioPlayer.PlayerManager;
 import net.ismailtosun.discordbotultimate.Entity.Track;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -25,13 +26,17 @@ import java.util.Map;
 public class WebSocketController {
 
     private PlayerManager playerManager;
+
     private JDA jda;
 
     private final SimpMessageSendingOperations messagingTemplate;
 
     @Value("${spring.data.guild.id}")
     private String guildId;
-    public WebSocketController(PlayerManager playerManager, JDA jda, SimpMessageSendingOperations messagingTemplate) {
+
+    @Value("${soundpad.base.dir}")
+    private String soundPadBaseDir;
+    public WebSocketController(PlayerManager playerManager,  JDA jda, SimpMessageSendingOperations messagingTemplate) {
         this.playerManager = playerManager;
         this.jda = jda;
         this.messagingTemplate = messagingTemplate;
@@ -128,6 +133,40 @@ public class WebSocketController {
         System.out.println("Shuffled queue: " + trackList);
         messagingTemplate.convertAndSend("/bot/playlist", trackList);
 
+
+    }
+
+    @MessageMapping("/bot/soundpad.play")
+    public void playSoundPad(@Payload Map<String, String> message) {
+        String soundPadID = message.get("soundpadId");
+
+        if (soundPadID != null) {
+            Guild guild = jda.getGuildById(guildId);
+            String soundPadUrl = soundPadBaseDir + soundPadID;
+            AudioTrack playingTrack = playerManager.getGuildMusicManager(guild).audioPlayer.getPlayingTrack();
+
+            if (playingTrack == null) {
+                playerManager.loadAndPlay(guild, soundPadUrl, false, false);
+                return;
+            }
+
+            // clone the track
+            AudioTrack playintrackClone = playingTrack.makeClone();
+            // set the position of the clone to the current position of the playing track
+            playintrackClone.setPosition(playingTrack.getPosition());
+
+            // add the previous track to top of the queue
+            playerManager.getGuildMusicManager(guild).scheduler.playNext(playintrackClone);
+
+            // increase the volume
+            playerManager.getGuildMusicManager(guild).audioPlayer.setVolume(10);
+            // load the sound
+            playerManager.loadAndPlay(guild, soundPadUrl, true, true);
+            // decrease the volume
+            playerManager.getGuildMusicManager(guild).audioPlayer.setVolume(5);
+        } else {
+            throw new IllegalArgumentException("Invalid message payload");
+        }
 
     }
 
