@@ -14,6 +14,7 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.ismailtosun.discordbotultimate.AudioPlayer.PlayerManager;
 import net.ismailtosun.discordbotultimate.Entity.Playlist;
 import net.ismailtosun.discordbotultimate.Repository.PlaylistRepository;
+import net.ismailtosun.discordbotultimate.Services.TokenService;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,12 +27,14 @@ public class MediaCommandManager extends ListenerAdapter {
     private final SimpMessageSendingOperations messagingTemplate;
 
     private final PlaylistRepository playlistRepository;
+    private final TokenService tokenService;
 
 
-    public MediaCommandManager(PlayerManager playerManager, SimpMessageSendingOperations messagingTemplate, PlaylistRepository playlistRepository) {
+    public MediaCommandManager(PlayerManager playerManager, SimpMessageSendingOperations messagingTemplate, PlaylistRepository playlistRepository, TokenService tokenService) {
         this.playerManager = playerManager;
         this.messagingTemplate = messagingTemplate;
         this.playlistRepository = playlistRepository;
+        this.tokenService = tokenService;
 
     }
 
@@ -90,7 +93,9 @@ public class MediaCommandManager extends ListenerAdapter {
     }
 
     private void handleURLCommand(SlashCommandInteractionEvent event) {
-        String link = "http://ismailtosun.net:3131/";
+        //String base_url = "http://ismailtosun.net:3131/";
+        String base_url = "http://localhost:8081/";
+        String link = base_url +"?token=" + tokenService.generateToken();
 
         event.reply("")
                 .addActionRow(

@@ -10,6 +10,7 @@ import net.ismailtosun.discordbotultimate.AudioPlayer.PlayerManager;
 import net.ismailtosun.discordbotultimate.Entity.Playlist;
 import net.ismailtosun.discordbotultimate.Entity.Track;
 import net.ismailtosun.discordbotultimate.Repository.PlaylistRepository;
+import net.ismailtosun.discordbotultimate.Services.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 import java.io.File;
@@ -33,23 +35,32 @@ public class IndexController {
     private PlaylistRepository playlistRepository;
     private PlayerManager playerManager;
     private JDA jda;
+    private TokenService tokenService;
     ObjectMapper objectMapper = new ObjectMapper();
 
     @Value("${spring.data.guild.id}")
     private String guildId;
 
     @Autowired
-    public IndexController(PlaylistRepository playlistRepository, PlayerManager playerManager, JDA jda) {
+    public IndexController(PlaylistRepository playlistRepository,
+                           PlayerManager playerManager,
+                           JDA jda,
+                           TokenService tokenService) {
         this.playlistRepository = playlistRepository;
         this.playerManager = playerManager;
         this.jda = jda;
+        this.tokenService = tokenService;
 
     }
 
 
     @GetMapping("/")
-    public String indexPage(Model model) throws JsonProcessingException {
+    public String indexPage(Model model,@RequestParam String token) throws JsonProcessingException {
 
+
+        if (!tokenService.isTokenValid(token)) {
+            return "redirect:/login";
+        }
         Guild guild = jda.getGuildById(guildId);
 
         // get all playlists

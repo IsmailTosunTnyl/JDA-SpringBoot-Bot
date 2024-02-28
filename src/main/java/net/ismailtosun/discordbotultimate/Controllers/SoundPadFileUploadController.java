@@ -2,6 +2,7 @@ package net.ismailtosun.discordbotultimate.Controllers;
 
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
+import net.ismailtosun.discordbotultimate.Services.TokenService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,10 +15,9 @@ import java.io.IOException;
 @CrossOrigin(maxAge = 3600, origins = "*")
 public class SoundPadFileUploadController {
 
-    private final ServletContext servletContext;
-
-    public SoundPadFileUploadController(ServletContext servletContext) {
-        this.servletContext = servletContext;
+private final TokenService tokenService;
+    public SoundPadFileUploadController(TokenService tokenService) {
+        this.tokenService = tokenService;
     }
     @GetMapping("/index")
     public String indexPage() {
@@ -25,7 +25,12 @@ public class SoundPadFileUploadController {
     }
 
     @PostMapping("/upload")
-    public String handleFileUpload(@RequestParam("file") MultipartFile file, HttpServletRequest request) throws IOException {
+    public String handleFileUpload(@RequestParam("file") MultipartFile file, HttpServletRequest request,@RequestParam("token") String token) throws IOException {
+        if (!tokenService.isTokenValid(token)) {
+            System.out.printf("Invalid token: %s%n", token);
+            return "redirect:/";
+        }
+
         // Logic to handle the uploaded file
         if (!file.isEmpty()) {
             System.out.println("Received file: " + file.getOriginalFilename());
@@ -57,7 +62,7 @@ public class SoundPadFileUploadController {
 
 
         // Redirect back to the sound pad page
-        return "redirect:/";
+        return "redirect:/?token="+token;
     }
 
 }

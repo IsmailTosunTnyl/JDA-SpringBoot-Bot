@@ -260,6 +260,7 @@ function playTrack(trackId) {
 }
 
 window.onload = function(){
+    saveTokenFromUrl();
     fillPlaylist();
     fillTracks();
     connect();
