@@ -28,8 +28,8 @@ public class SlashCommands extends ListenerAdapter {
                 .addOption(OptionType.STRING, "song", "Song name or url", true));
         commands.add(Commands.slash("delete","Delete message from channel")
                 .addOption(OptionType.INTEGER,"messagecount","Number of messages to delete",true));
-        commands.add(Commands.slash("soundpad","Play a soundpad"));
-        commands.add(Commands.slash("local","Play a soundpad"));
+        commands.add(Commands.slash("soundpadupload","Admin usage only please, Its upload the audio folder to mongo db"));
+        commands.add(Commands.slash("soundpaddownload","Admin usage only please, Its download the audio folder from mongo db"));
         System.out.println("MediaCommandManager.onGuildReady");
         event.getGuild().updateCommands().addCommands(commands).queue();
     }

@@ -9,7 +9,7 @@ import java.util.Base64;
 
 @Service
 public class TokenService {
-    private static final long TOKEN_VALIDITY_PERIOD_MS = 3600000;
+    private static final long TOKEN_VALIDITY_PERIOD_MS = 18000000;
     private ArrayList<Token> tokens;
 
     public TokenService() {

@@ -8,6 +8,8 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.ismailtosun.discordbotultimate.AudioPlayer.PlayerManager;
 import net.ismailtosun.discordbotultimate.Listeners.*;
 import net.ismailtosun.discordbotultimate.Repository.PlaylistRepository;
+import net.ismailtosun.discordbotultimate.Repository.SoundpadRepository;
+import net.ismailtosun.discordbotultimate.Services.SoundPadFileService;
 import net.ismailtosun.discordbotultimate.Services.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Repository;
 public class BotConfiguration {
 
     private PlaylistRepository playlistRepository;
+    private SoundPadFileService soundPadFileService;
     private final SimpMessageSendingOperations messagingTemplate;
 
     private PlayerManager playerManager;
@@ -33,11 +36,14 @@ public class BotConfiguration {
     @Autowired
     public BotConfiguration(PlaylistRepository playlistRepository,
                             SimpMessageSendingOperations messagingTemplate,
-                            TokenService tokenService) {
+                            TokenService tokenService,
+                            SoundPadFileService soundPadFileService) {
         this.playlistRepository = playlistRepository;
         this.messagingTemplate = messagingTemplate;
         playerManager=new PlayerManager(messagingTemplate);
         this.tokenService = tokenService;
+        this.soundPadFileService = soundPadFileService;
+
     }
 
     @Value("${token}")
@@ -56,7 +62,7 @@ public class BotConfiguration {
                                             ,tokenService),
                                    new UtilsCommandsManager(playlistRepository),
                                     new SlashCommands(),
-                                    new SoundPadCommandManager(playerManager)
+                                    new SoundPadCommandManager(playerManager,soundPadFileService)
                        )
                 .build();
         System.out.println("JDABuilder is created");

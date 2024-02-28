@@ -1,17 +1,29 @@
 package net.ismailtosun.discordbotultimate.Listeners;
 
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import lombok.SneakyThrows;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.ismailtosun.discordbotultimate.AudioPlayer.PlayerManager;
+import net.ismailtosun.discordbotultimate.Entity.SoundPadItem;
+import net.ismailtosun.discordbotultimate.Repository.SoundpadRepository;
+import net.ismailtosun.discordbotultimate.Services.SoundPadFileService;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 
 
 public class SoundPadCommandManager extends ListenerAdapter {
     private PlayerManager playerManager;
+    private SoundPadFileService soundPadFileService;
 
-    public SoundPadCommandManager(PlayerManager playerManager) {
+    private String audioDirectoryPath ; // Adjust this path accordingly
+
+    public SoundPadCommandManager(PlayerManager playerManager,
+                                  SoundPadFileService soundPadFileService) {
         this.playerManager = playerManager;
+        this.soundPadFileService = soundPadFileService;
+        audioDirectoryPath = "src/main/resources/audio/";
     }
 
     @SneakyThrows
@@ -20,11 +32,11 @@ public class SoundPadCommandManager extends ListenerAdapter {
         super.onSlashCommandInteraction(event);
 
         switch (event.getName()) {
-            case "soundpad":
-                handleSoundPadCommand(event);
+            case "soundpadupload":
+                handleSoundPadUploadCommand(event);
                 break;
-            case "local":
-                handleLocalCommand(event);
+            case "soundpaddownload":
+                handleDownloadCommand(event);
                 break;
             default:
                 break;
@@ -32,33 +44,19 @@ public class SoundPadCommandManager extends ListenerAdapter {
 
     }
 
-    private void handleLocalCommand(SlashCommandInteractionEvent event) {
-        // play local mp3 file
+    private void handleDownloadCommand(SlashCommandInteractionEvent event) {
+        int fileCount = soundPadFileService.downloadAudioFolderFromDB();
 
-        playerManager.loadAndPlay(event.getGuild(), "src/main/resources/audio/teknoloji.mp3",false,false);
-        event.reply("Playing local sound").queue();
+
+        event.reply(fileCount+" file downloaded from database").queue();
     }
 
-    private void handleSoundPadCommand(SlashCommandInteractionEvent event) {
-        //TODO fixed soundpad url for testing
-        String soundURL = "src/main/resources/audio/teknoloji.mp3";
+    private void handleSoundPadUploadCommand(SlashCommandInteractionEvent event) throws IOException {
+
+        int fileCount = soundPadFileService.uploadAudioFolderToDB();
 
 
-        // get current playing track
-        AudioTrack playingTrack = playerManager.getGuildMusicManager(event.getGuild()).audioPlayer.getPlayingTrack();
-        // clone the track
-        AudioTrack playintrackClone = playingTrack.makeClone();
-        // set the position of the clone to the current position of the playing track
-        playintrackClone.setPosition(playingTrack.getPosition());
-
-        // add the previous track to top of the queue
-        playerManager.getGuildMusicManager(event.getGuild()).scheduler.playNext(playintrackClone);
-
-        // load the sound
-        playerManager.loadAndPlay(event.getGuild(), soundURL, true, true);
-
-
-        event.reply("Playing soundpad").queue();
+        event.reply(fileCount+" File wrote to DB ").queue();
 
     }
 
