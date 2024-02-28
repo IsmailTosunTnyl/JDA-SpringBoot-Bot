@@ -25,6 +25,7 @@
     <script>
       document.getElementById('file').addEventListener('change', function() {
           var form = document.getElementById('uploadForm');
+          form.action += "?token="+sessionStorage.getItem('token');
           form.submit();
       });
     </script>

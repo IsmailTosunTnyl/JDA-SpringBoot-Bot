@@ -150,3 +150,12 @@ function shake (element, magnitude = 16, angular = false) {
     }
 
 };
+
+// Save the token to the session storage
+function saveTokenFromUrl() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    if (token) {
+        sessionStorage.setItem('token', token);
+    }
+}

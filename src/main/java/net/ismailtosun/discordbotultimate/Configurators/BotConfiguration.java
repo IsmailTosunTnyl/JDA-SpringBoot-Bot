@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.ismailtosun.discordbotultimate.AudioPlayer.PlayerManager;
 import net.ismailtosun.discordbotultimate.Listeners.*;
 import net.ismailtosun.discordbotultimate.Repository.PlaylistRepository;
+import net.ismailtosun.discordbotultimate.Services.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -27,11 +28,16 @@ public class BotConfiguration {
 
     public static JDA jda;
 
+    private final TokenService tokenService;
+
     @Autowired
-    public BotConfiguration(PlaylistRepository playlistRepository, SimpMessageSendingOperations messagingTemplate) {
+    public BotConfiguration(PlaylistRepository playlistRepository,
+                            SimpMessageSendingOperations messagingTemplate,
+                            TokenService tokenService) {
         this.playlistRepository = playlistRepository;
         this.messagingTemplate = messagingTemplate;
         playerManager=new PlayerManager(messagingTemplate);
+        this.tokenService = tokenService;
     }
 
     @Value("${token}")
@@ -44,7 +50,10 @@ public class BotConfiguration {
         JDA jda = JDABuilder.createDefault(token)
                 .enableIntents(GatewayIntent.MESSAGE_CONTENT)
                 .addEventListeners(
-                                    new MediaCommandManager(playerManager,messagingTemplate,playlistRepository),
+                                    new MediaCommandManager(playerManager
+                                            ,messagingTemplate
+                                            ,playlistRepository
+                                            ,tokenService),
                                    new UtilsCommandsManager(playlistRepository),
                                     new SlashCommands(),
                                     new SoundPadCommandManager(playerManager)
