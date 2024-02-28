@@ -59,7 +59,7 @@ public class IndexController {
 
 
         if (!tokenService.isTokenValid(token)) {
-            return "redirect:/login";
+            return "redirect:/getatoken";
         }
         Guild guild = jda.getGuildById(guildId);
 
