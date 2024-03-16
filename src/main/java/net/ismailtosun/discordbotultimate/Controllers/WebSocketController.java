@@ -36,6 +36,10 @@ public class WebSocketController {
 
     @Value("${soundpad.base.dir}")
     private String soundPadBaseDir;
+    @Value("${soundpad.volume}")
+    private int soundPadVolume;
+    @Value("${audioPlayer.volume}")
+    private int audioPlayerVolume;
     public WebSocketController(PlayerManager playerManager,  JDA jda, SimpMessageSendingOperations messagingTemplate) {
         this.playerManager = playerManager;
         this.jda = jda;
@@ -137,34 +141,54 @@ public class WebSocketController {
     }
 
     @MessageMapping("/bot/soundpad.play")
-    public void playSoundPad(@Payload Map<String, String> message) {
+    public void playSoundPad(@Payload Map<String, String> message) throws InterruptedException {
         String soundPadID = message.get("soundpadId");
-
+        Guild guild = jda.getGuildById(guildId);
         if (soundPadID != null) {
-            Guild guild = jda.getGuildById(guildId);
-            String soundPadUrl = soundPadBaseDir + soundPadID;
-            AudioTrack playingTrack = playerManager.getGuildMusicManager(guild).audioPlayer.getPlayingTrack();
+            try{
 
-            if (playingTrack == null) {
-                playerManager.loadAndPlay(guild, soundPadUrl, false, false);
-                return;
+                String soundPadUrl = soundPadBaseDir + soundPadID;
+                AudioTrack playingTrack = playerManager.getGuildMusicManager(guild).audioPlayer.getPlayingTrack();
+
+                // increase the volume
+                System.out.println("sound increased");
+                playerManager.getGuildMusicManager(guild).audioPlayer.setVolume(soundPadVolume);
+                if (playingTrack == null) {
+                    playerManager.loadAndPlay(guild, soundPadUrl, false, false);
+
+                }else {
+
+                    // clone the track
+                    AudioTrack playintrackClone = playingTrack.makeClone();
+                    // set the position of the clone to the current position of the playing track
+                    playintrackClone.setPosition(playingTrack.getPosition());
+
+                    // add the previous track to top of the queue
+                    playerManager.getGuildMusicManager(guild).scheduler.playNext(playintrackClone);
+
+                    // load the sound
+                    playerManager.loadAndPlay(guild, soundPadUrl, true, true);
+
+                }
+                // decrease the volume
+                long trackLength =  playerManager.getGuildMusicManager(guild).audioPlayer.getPlayingTrack().getDuration()/1000;
+                Thread.sleep(trackLength);
+                playerManager.getGuildMusicManager(guild).audioPlayer.setVolume(audioPlayerVolume);
+            }
+            catch (Exception e) {
+                // if the player only busy with soundpad, it will not decrease the volume, so we need to decrease it manually
+                Thread.sleep(1000);
+                playerManager.getGuildMusicManager(guild).audioPlayer.setVolume(audioPlayerVolume);
+                e.printStackTrace();
             }
 
-            // clone the track
-            AudioTrack playintrackClone = playingTrack.makeClone();
-            // set the position of the clone to the current position of the playing track
-            playintrackClone.setPosition(playingTrack.getPosition());
 
-            // add the previous track to top of the queue
-            playerManager.getGuildMusicManager(guild).scheduler.playNext(playintrackClone);
 
-            // increase the volume
-            playerManager.getGuildMusicManager(guild).audioPlayer.setVolume(10);
-            // load the sound
-            playerManager.loadAndPlay(guild, soundPadUrl, true, true);
-            // decrease the volume
-            playerManager.getGuildMusicManager(guild).audioPlayer.setVolume(5);
+
+
+
         } else {
+
             throw new IllegalArgumentException("Invalid message payload");
         }
 
