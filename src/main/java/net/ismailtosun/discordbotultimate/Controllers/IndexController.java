@@ -95,6 +95,11 @@ public class IndexController {
         return "player";
     }
 
+    @GetMapping("/getatoken")
+    public String getTokenPage() {
+        return "getatoken";
+    }
+
 
     public ArrayList<String>  listFilesInDirectory() {
         // Create a File object representing the directory
