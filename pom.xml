@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -12,7 +11,7 @@
 	<artifactId>discordbotultimate</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>discordbotultimate</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Discord Music Bot With Advance Features</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
@@ -24,7 +23,6 @@
 		</repository>
 	</repositories>
 	<dependencies>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-mongodb</artifactId>
@@ -48,7 +46,6 @@
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -59,15 +56,14 @@
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 			<version>3.2.0</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-websocket</artifactId>
 		</dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>dev.arbjerg</groupId>
 			<artifactId>lavaplayer</artifactId>
@@ -78,9 +74,14 @@
 			<artifactId>nanojson</artifactId>
 			<version>1.9</version>
 		</dependency>
-
-    </dependencies>
-
+		<dependency>
+			<groupId>com.github.lavalink-devs</groupId>
+			<artifactId>youtube-common</artifactId>
+			<version>1.7.2</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/libs/youtube-common-1.7.2.jar</systemPath>
+		</dependency>
+	</dependencies>
 	<build>
 		<plugins>
 			<!-- Spring Boot Maven Plugin -->
@@ -88,26 +89,6 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.8</version>
-				<executions>
-					<execution>
-						<phase>validate</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
-						<configuration>
-							<tasks>
-								<get src="https://github.com/lavalink-devs/youtube-source/releases/download/1.7.2/youtube-plugin-1.7.2.jar" dest="${project.build.directory}/lib/my-jar.jar" />
-							</tasks>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 	</build>
-
 </project>
