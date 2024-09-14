@@ -79,7 +79,6 @@ public class PlayerManager {
                 List<AudioTrack> tracks = audioPlaylist.getTracks();
 
 
-                System.out.println(tracks);
                 if(!tracks.isEmpty()){
                     if (trackUrl.contains("list")) {
 

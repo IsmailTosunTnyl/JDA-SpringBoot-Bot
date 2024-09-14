@@ -93,7 +93,7 @@ public class MediaCommandManager extends ListenerAdapter {
     }
 
     private void handleURLCommand(SlashCommandInteractionEvent event) {
-        String base_url = "http://ismailtosun.net:3131/";
+        String base_url = "http://16.171.136.126:3131/";
         //String base_url = "http://localhost:8081/";
         String link = base_url +"?token=" + tokenService.generateToken();
 

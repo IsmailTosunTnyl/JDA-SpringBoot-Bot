@@ -75,11 +75,9 @@
 			<version>1.9</version>
 		</dependency>
 		<dependency>
-			<groupId>com.github.lavalink-devs</groupId>
+			<groupId>dev.lavalink</groupId>
 			<artifactId>youtube-common</artifactId>
 			<version>1.7.2</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/libs/youtube-common-1.7.2.jar</systemPath>
 		</dependency>
 	</dependencies>
 	<build>
@@ -88,6 +86,17 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>net.ismailtosun.discordbotultimate.DiscordbotultimateApplication</mainClass>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>3.2.0</version>
+				<configuration>
+					<mainClass>net.ismailtosun.discordbotultimate.DiscordbotultimateApplication</mainClass>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
