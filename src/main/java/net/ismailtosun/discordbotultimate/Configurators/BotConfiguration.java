@@ -56,7 +56,7 @@ public class BotConfiguration {
 
     @Bean
     public JDA jda() {
-        System.out.println("JDABuilder is creating");
+        logger.info("JDABuilder is creating");
         JDA jda = JDABuilder.createDefault(token)
                 .enableIntents(GatewayIntent.MESSAGE_CONTENT)
                 .addEventListeners(
@@ -69,7 +69,7 @@ public class BotConfiguration {
                         new SoundPadCommandManager(playerManager, soundPadFileService)
                 )
                 .build();
-        System.out.println("JDABuilder is created");
+
         logger.info("JDABuilder is created");
 
         BotConfiguration.jda = jda;

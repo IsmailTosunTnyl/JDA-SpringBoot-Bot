@@ -6,6 +6,8 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import net.dv8tion.jda.api.entities.Activity;
 import net.ismailtosun.discordbotultimate.Configurators.BotConfiguration;
 import net.ismailtosun.discordbotultimate.Services.TrackQueueUpdateService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 
 import java.util.ArrayList;
@@ -15,7 +17,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 
 public class TrackScheduler extends AudioEventAdapter {
-
+    Logger logger = LoggerFactory.getLogger(TrackScheduler.class);
     private final AudioPlayer player;
 
     public final BlockingQueue<AudioTrack> queue;
@@ -33,12 +35,13 @@ public class TrackScheduler extends AudioEventAdapter {
     public void queue(AudioTrack track) {
 
         if (!player.startTrack(track, true)) {
+            logger.info("Track added to queue: "+ queue.size()+". " + track.getInfo().title);
             queue.offer(track);
         }
         else {
+            logger.info("No Track remain in queue, status set to default");
             BotConfiguration.jda.getPresence().setActivity(Activity.customStatus("Playing: " + track.getInfo().title));
         }
-
     }
 
     public void nextTrack() {
@@ -55,18 +58,19 @@ public class TrackScheduler extends AudioEventAdapter {
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
         if (endReason.mayStartNext) {
-            System.out.println("Track ended, starting next track");
+            logger.info("Track ended, starting next track");
             nextTrack();
         }
         else {
            BotConfiguration.jda.getPresence().setActivity(Activity.playing("Leagues of Legends"));
+           logger.info("Status set to: Leagues of Legends");
         }
     }
 
 
     public void playTrackById(int position) {
         if (position < 1 || position > queue.size()) {
-            System.out.println("Invalid position: " + position);
+            logger.error("Error: Unable to play track at position " + position);
             return;
         }
 
@@ -86,7 +90,7 @@ public class TrackScheduler extends AudioEventAdapter {
                     Activity.customStatus("Playing: " + requestedTrack.getInfo().title)
             );
         } else {
-            System.out.println("Error: Unable to play track at position " + position);
+            logger.error("Error: Unable to play track at position " + position);
         }
         trackQueueUpdateService.updateQueue(queue);
     }
@@ -104,6 +108,7 @@ public class TrackScheduler extends AudioEventAdapter {
     public void playNext(AudioTrack track) {
 
         // place the track at the front of the queue
+        logger.info("Added track to front of queue: " + track.getInfo().title);
         List<AudioTrack> tracks = new ArrayList<>(queue);
         queue.clear();
         queue.offer(track);

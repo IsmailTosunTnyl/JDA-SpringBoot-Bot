@@ -43,19 +43,65 @@ public class PlayerManager {
     }
 
     public GuildMusicManager getGuildMusicManager(Guild guild) {
-          return musicManagers.computeIfAbsent(guild.getIdLong(), (guildId) -> {
-                final GuildMusicManager guildMusicManager = new GuildMusicManager(audioPlayerManager, messagingTemplate);
-                guild.getAudioManager().setSendingHandler(guildMusicManager.getSendHandler());
-                return guildMusicManager;
-            });
+        return musicManagers.computeIfAbsent(guild.getIdLong(), (guildId) -> {
+            final GuildMusicManager guildMusicManager = new GuildMusicManager(audioPlayerManager, messagingTemplate);
+            guild.getAudioManager().setSendingHandler(guildMusicManager.getSendHandler());
+            return guildMusicManager;
+        });
     }
 
+    private void handleTrackPlayback(GuildMusicManager musicManager, AudioTrack audioTrack, boolean playNext, boolean playNow) {
+        if (playNext) {
+            musicManager.scheduler.playNext(audioTrack);
+        } else {
+            musicManager.scheduler.queue(audioTrack);
+        }
+        if (playNow) {
+            musicManager.scheduler.nextTrack();
+        }
+    }
 
-
-    public void loadAndPlay(Guild guild, String trackUrl,boolean playNext,boolean playNow) {
+    public void loadAndPlay(Guild guild, String trackUrl, boolean playNext, boolean playNow) {
         final GuildMusicManager musicManager = getGuildMusicManager(guild);
 
-        AudioReference ar = new AudioReference(trackUrl, null);
+        audioPlayerManager.loadItem(trackUrl, new AudioLoadResultHandler() {
+            @Override
+            public void trackLoaded(AudioTrack audioTrack) {
+                handleTrackPlayback(musicManager, audioTrack, playNext, playNow);
+                // For updating queue
+                trackQueueUpdateService.updateQueue(musicManager.scheduler.queue);
+            }
+
+            @Override
+            public void playlistLoaded(AudioPlaylist audioPlaylist) {
+                List<AudioTrack> tracks = audioPlaylist.getTracks();
+
+                if (!tracks.isEmpty()) {
+                    if (trackUrl.contains("list")) {
+
+                        for (AudioTrack track : tracks) {
+                            musicManager.scheduler.queue(track);
+                        }
+                    } else {
+                        AudioTrack audioTrack = tracks.get(0);
+                        handleTrackPlayback(musicManager, audioTrack, playNext, playNow);
+                    }
+                    trackQueueUpdateService.updateQueue(musicManager.scheduler.queue);
+
+                }
+            }
+
+            @Override
+            public void noMatches() {
+
+            }
+
+            @Override
+            public void loadFailed(FriendlyException e) {
+
+            }
+        });
+        /*
         audioPlayerManager.loadItemOrdered(musicManager, trackUrl, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack audioTrack) {
@@ -76,14 +122,12 @@ public class PlayerManager {
             public void playlistLoaded(AudioPlaylist audioPlaylist) {
                 List<AudioTrack> tracks = audioPlaylist.getTracks();
 
-
                 if(!tracks.isEmpty()){
                     if (trackUrl.contains("list")) {
 
                         for (AudioTrack track : tracks) {
                             musicManager.scheduler.queue(track);
                         }
-
                     }
                     else {
                         musicManager.scheduler.queue(tracks.get(0));
@@ -92,9 +136,6 @@ public class PlayerManager {
                     trackQueueUpdateService.updateQueue(musicManager.scheduler.queue);
 
                 }
-
-
-
             }
 
             @Override
@@ -108,25 +149,20 @@ public class PlayerManager {
             }
         });
 
+         */
+
     }
-
-
-
 
 
     public Playlist getplaylist(TextChannel textChannel, String trackUrl) throws InterruptedException {
         /*
-        *
-        * it's return a Playlist object with tracks and url
-        * it's need playlist url and lavaplayer function to getting playlist info and tracks
-        *
-        *
-        *
-        * */
-
-
-
-
+         *
+         * it's return a Playlist object with tracks and url
+         * it's need playlist url and lavaplayer function to getting playlist info and tracks
+         *
+         *
+         *
+         * */
         final GuildMusicManager musicManager = getGuildMusicManager(textChannel.getGuild());
         Playlist playlist = new Playlist();
         ArrayList<Track> trackArrayList = new ArrayList<>();
@@ -172,9 +208,4 @@ public class PlayerManager {
         playlist.setURL(trackUrl);
         return playlist;
     }
-
-
-
-
-
 }

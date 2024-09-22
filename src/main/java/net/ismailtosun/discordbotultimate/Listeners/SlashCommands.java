@@ -5,12 +5,14 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SlashCommands extends ListenerAdapter {
-
+    Logger logger = LoggerFactory.getLogger(SlashCommands.class);
     @Override
     public void onGuildReady(GuildReadyEvent event) {
         super.onGuildReady(event);
@@ -30,7 +32,7 @@ public class SlashCommands extends ListenerAdapter {
                 .addOption(OptionType.INTEGER,"messagecount","Number of messages to delete",true));
         commands.add(Commands.slash("soundpadupload","Admin usage only please, Its upload the audio folder to mongo db"));
         commands.add(Commands.slash("soundpaddownload","Admin usage only please, Its download the audio folder from mongo db"));
-        System.out.println("MediaCommandManager.onGuildReady");
         event.getGuild().updateCommands().addCommands(commands).queue();
+        logger.info("Commands are added to the guild");
     }
 }

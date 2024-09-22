@@ -15,6 +15,8 @@ import net.ismailtosun.discordbotultimate.AudioPlayer.PlayerManager;
 import net.ismailtosun.discordbotultimate.Entity.Playlist;
 import net.ismailtosun.discordbotultimate.Repository.PlaylistRepository;
 import net.ismailtosun.discordbotultimate.Services.TokenService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +24,7 @@ import java.util.List;
 
 public class MediaCommandManager extends ListenerAdapter {
 
-
+    Logger logger = LoggerFactory.getLogger(MediaCommandManager.class);
     private final PlayerManager playerManager;
     private final SimpMessageSendingOperations messagingTemplate;
 
@@ -46,27 +48,35 @@ public class MediaCommandManager extends ListenerAdapter {
         switch (event.getName()) {
             case "ping":
                 handlePingCommand(event);
+                logger.info("Ping command received");
                 break;
             case "join":
                 handleJoinCommand(event);
+                logger.info("Join command received");
                 break;
             case "play":
                 handlePlayCommand(event,false);
+                logger.info("Play command received");
                 break;
             case "next":
                 handleNextCommand(event);
+                logger.info("Next command received");
                 break;
             case "now":
                 handleNowCommand(event);
+                logger.info("Now command received");
                 break;
             case "url":
                 handleURLCommand(event);
+                logger.info("URL command received");
                 break;
             case "shuffle":
                 handleShuffleCommand(event);
+                logger.info("Shuffle command received");
                 break;
             case "playnext":
                 handlePlayCommand(event,true);
+                logger.info("PlayNext command received");
                 break;
             default:
                 break;
@@ -87,6 +97,7 @@ public class MediaCommandManager extends ListenerAdapter {
         // check if the user is in a voice channel
         if (audioChannelUnion == null) {
             event.reply("You must join a voice channel first!").queue();
+            logger.warn("User is not in a voice channel");
             return null;
         }
         return audioChannelUnion.asVoiceChannel();
@@ -96,7 +107,7 @@ public class MediaCommandManager extends ListenerAdapter {
         String base_url = "http://16.171.136.126:3131/";
         //String base_url = "http://localhost:8081/";
         String link = base_url +"?token=" + tokenService.generateToken();
-
+        logger.info("Base URL: " + link);
         event.reply("")
                 .addActionRow(
                         Button.link(link, Emoji.fromFormatted("<:yusuf:703694580335378474>"))// Button with only a label
@@ -112,6 +123,7 @@ public class MediaCommandManager extends ListenerAdapter {
         }
         if (playerManager.getGuildMusicManager(event.getGuild()).audioPlayer.getPlayingTrack() == null) {
             event.reply("The bot is not playing a song!").queue();
+            logger.warn("The bot is not playing a song!");
             return;
         }
         event.reply("Playing now: " + playerManager.getGuildMusicManager(event.getGuild()).audioPlayer.getPlayingTrack().getInfo().title).queue();
@@ -122,14 +134,17 @@ public class MediaCommandManager extends ListenerAdapter {
 
         VoiceChannel channel = getVoiceChannel(event);
         if (channel == null) {
+            logger.warn("User is not in a voice channel");
             return;
         }
         if (playerManager.getGuildMusicManager(event.getGuild()).audioPlayer.getPlayingTrack() == null) {
             event.reply("The bot is not playing a song!").queue();
+            logger.warn("The bot is not playing a song!");
             return;
         }
         playerManager.getGuildMusicManager(event.getGuild()).scheduler.nextTrack();
         event.reply("Playing next song: " + playerManager.getGuildMusicManager(event.getGuild()).audioPlayer.getPlayingTrack().getInfo().title).queue();
+        logger.info("Playing next song: " + playerManager.getGuildMusicManager(event.getGuild()).audioPlayer.getPlayingTrack().getInfo().title);
 
 
         
@@ -138,20 +153,24 @@ public class MediaCommandManager extends ListenerAdapter {
     private void handlePlayCommand(SlashCommandInteractionEvent event,boolean playNext) throws InterruptedException {
         VoiceChannel channel = getVoiceChannel(event);
         if (channel == null) {
+            logger.warn("User is not in a voice channel");
             return;
         }
         String song = event.getOption("song").getAsString();
         event.getGuild().getAudioManager().openAudioConnection(channel);
         playerManager.loadAndPlay(event.getGuild(), getURI(song),playNext,false);
         if (song.contains("playlist")) {
+            logger.info("Playlist URL detected");
             Playlist existingPlaylist = playlistRepository.findById(song).orElse(playlistRepository.findByName(playerManager.getplaylist(event.getChannel().asTextChannel(), song).getName()));
             if (existingPlaylist == null) {
                 existingPlaylist = playerManager.getplaylist(event.getChannel().asTextChannel(), song);
                 playlistRepository.insert(existingPlaylist);
                 event.getChannel().asTextChannel().sendMessage(" NEW Playlist added " + existingPlaylist.getURL()).queue();
+                logger.info("New playlist added: " + existingPlaylist.getURL());
             }
         }
         event.reply("Searching: " + song).queue();
+        logger.info("Searching: " + song);
 
     }
 
@@ -184,7 +203,7 @@ public class MediaCommandManager extends ListenerAdapter {
             return trackUrl;
         }
         else {
-            return "ytsearch:" + trackUrl +"Official Audio";
+            return "ytsearch:" + trackUrl +" Official Audio";
         }
     }
 }
