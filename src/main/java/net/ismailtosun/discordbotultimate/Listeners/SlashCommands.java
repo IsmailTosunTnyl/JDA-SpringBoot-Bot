@@ -34,6 +34,7 @@ public class SlashCommands extends ListenerAdapter {
                 .addOption(OptionType.INTEGER, "messagecount", "Number of messages to delete", true));
         commands.add(Commands.slash("soundpadupload", "Admin usage only please, Its upload the audio folder to mongo db"));
         commands.add(Commands.slash("soundpaddownload", "Admin usage only please, Its download the audio folder from mongo db"));
+        commands.add(Commands.slash("player", "Media player controls"));
         event.getGuild().updateCommands().addCommands(commands).queue();
         logger.info("Commands are added to the guild");
     }

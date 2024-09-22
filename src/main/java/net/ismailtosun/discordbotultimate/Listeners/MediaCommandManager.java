@@ -19,11 +19,13 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.ItemComponent;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.ismailtosun.discordbotultimate.AudioPlayer.EmbedPlayer;
 import net.ismailtosun.discordbotultimate.AudioPlayer.PlayerManager;
 import net.ismailtosun.discordbotultimate.Constants.ButtonConstants;
 import net.ismailtosun.discordbotultimate.Entity.Playlist;
 import net.ismailtosun.discordbotultimate.Repository.PlaylistRepository;
 import net.ismailtosun.discordbotultimate.Services.TokenService;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -41,7 +43,7 @@ import java.util.List;
 
 public class MediaCommandManager extends ListenerAdapter {
 
-    static Logger LOGGER = LoggerFactory.getLogger(MediaCommandManager.class);
+    static Logger logger = LoggerFactory.getLogger(MediaCommandManager.class);
     private final PlayerManager playerManager;
     private final SimpMessageSendingOperations messagingTemplate;
 
@@ -59,50 +61,65 @@ public class MediaCommandManager extends ListenerAdapter {
 
     @SneakyThrows
     @Override
-    public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
+    public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
         super.onSlashCommandInteraction(event);
 
         switch (event.getName()) {
             case "ping":
                 handlePingCommand(event);
-                LOGGER.info("Ping command received");
+                logger.info("Ping command received");
                 break;
             case "join":
                 handleJoinCommand(event);
-                LOGGER.info("Join command received");
+                logger.info("Join command received");
                 break;
             case "play":
                 handlePlayCommand(event, false);
-                LOGGER.info("Play command received");
+                logger.info("Play command received");
                 break;
             case "next":
                 handleNextCommand(event);
-                LOGGER.info("Next command received");
+                logger.info("Next command received");
                 break;
             case "now":
                 handleNowCommand(event);
-                LOGGER.info("Now command received");
+                logger.info("Now command received");
                 break;
             case "url":
                 handleURLCommand(event);
-                LOGGER.info("URL command received");
+                logger.info("URL command received");
                 break;
             case "shuffle":
                 handleShuffleCommand(event);
-                LOGGER.info("Shuffle command received");
+                logger.info("Shuffle command received");
                 break;
             case "playnext":
                 handlePlayCommand(event, true);
-                LOGGER.info("PlayNext command received");
+                logger.info("PlayNext command received");
                 break;
             case "playlist":
                 handlePlaylistCommand(event);
-                LOGGER.info("Playlist command received");
+                logger.info("Playlist command received");
+                break;
+            case "player":
+                handlePlayerCommand(event);
+                logger.info("Player command received");
                 break;
 
             default:
                 break;
         }
+
+    }
+
+    private void handlePlayerCommand(SlashCommandInteractionEvent event) {
+        EmbedPlayer embedPlayer = EmbedPlayer.getInstace();
+        embedPlayer.setPlayerManager(playerManager);
+        embedPlayer.setTextChannel(event.getChannel().asTextChannel());
+           MessageEmbed embed = embedPlayer.createEmbed(playerManager.getGuildMusicManager(event.getGuild()).audioPlayer.getPlayingTrack());
+            // set the last message id to the current message id
+        logger.info("Embed created");
+        EmbedPlayer.getInstace().sendEmbed(event.getChannel().asTextChannel());
 
     }
 
@@ -130,7 +147,6 @@ public class MediaCommandManager extends ListenerAdapter {
     }
 
 
-
     private void handleShuffleCommand(SlashCommandInteractionEvent event) {
         playerManager.getGuildMusicManager(event.getGuild()).scheduler.shuffleQueue();
         event.reply("Queue shuffled!").queue();
@@ -142,7 +158,7 @@ public class MediaCommandManager extends ListenerAdapter {
         if (audioChannelUnion == null) {
             TextChannel channel = event.getJDA().getTextChannelById(event.getChannel().getId());
             channel.sendMessage("You need to be in a voice channel to use this command!").queue();
-            LOGGER.warn("User is not in a voice channel");
+            logger.warn("User is not in a voice channel");
             return null;
         }
         return audioChannelUnion.asVoiceChannel();
@@ -152,7 +168,7 @@ public class MediaCommandManager extends ListenerAdapter {
         String base_url = "http://16.171.136.126:3131/";
         //String base_url = "http://localhost:8081/";
         String link = base_url + "?token=" + tokenService.generateToken();
-        LOGGER.info("Base URL: " + link);
+        logger.info("Base URL: " + link);
         event.reply("")
                 .addActionRow(
                         Button.link(link, Emoji.fromFormatted("<:yusuf:703694580335378474>"))
@@ -168,7 +184,7 @@ public class MediaCommandManager extends ListenerAdapter {
         }
         if (playerManager.getGuildMusicManager(event.getGuild()).audioPlayer.getPlayingTrack() == null) {
             event.reply("The bot is not playing a song!").queue();
-            LOGGER.warn("The bot is not playing a song!");
+            logger.warn("The bot is not playing a song!");
             return;
         }
         event.reply("Playing now: " + playerManager.getGuildMusicManager(event.getGuild()).audioPlayer.getPlayingTrack().getInfo().title).queue();
@@ -179,17 +195,17 @@ public class MediaCommandManager extends ListenerAdapter {
 
         VoiceChannel channel = getVoiceChannel(event);
         if (channel == null) {
-            LOGGER.warn("User is not in a voice channel");
+            logger.warn("User is not in a voice channel");
             return;
         }
         if (playerManager.getGuildMusicManager(event.getGuild()).audioPlayer.getPlayingTrack() == null) {
             event.reply("The bot is not playing a song!").queue();
-            LOGGER.warn("The bot is not playing a song!");
+            logger.warn("The bot is not playing a song!");
             return;
         }
         playerManager.getGuildMusicManager(event.getGuild()).scheduler.nextTrack();
         event.reply("Playing next song: " + playerManager.getGuildMusicManager(event.getGuild()).audioPlayer.getPlayingTrack().getInfo().title).queue();
-        LOGGER.info("Playing next song: " + playerManager.getGuildMusicManager(event.getGuild()).audioPlayer.getPlayingTrack().getInfo().title);
+        logger.info("Playing next song: " + playerManager.getGuildMusicManager(event.getGuild()).audioPlayer.getPlayingTrack().getInfo().title);
 
 
     }
@@ -197,24 +213,26 @@ public class MediaCommandManager extends ListenerAdapter {
     private void handlePlayCommand(SlashCommandInteractionEvent event, boolean playNext) throws InterruptedException {
         VoiceChannel channel = getVoiceChannel(event);
         if (channel == null) {
-            LOGGER.warn("User is not in a voice channel");
+            logger.warn("User is not in a voice channel");
             return;
         }
         String song = event.getOption("song").getAsString();
         event.getGuild().getAudioManager().openAudioConnection(channel);
         playerManager.loadAndPlay(event.getGuild(), getURI(song), playNext, false);
         if (song.contains("playlist")) {
-            LOGGER.info("Playlist URL detected");
+            logger.info("Playlist URL detected");
             Playlist existingPlaylist = playlistRepository.findById(song).orElse(playlistRepository.findByName(playerManager.getplaylist(event.getChannel().asTextChannel(), song).getName()));
             if (existingPlaylist == null) {
                 existingPlaylist = playerManager.getplaylist(event.getChannel().asTextChannel(), song);
                 playlistRepository.insert(existingPlaylist);
                 event.getChannel().asTextChannel().sendMessage(" NEW Playlist added " + existingPlaylist.getURL()).queue();
-                LOGGER.info("New playlist added: " + existingPlaylist.getURL());
+                logger.info("New playlist added: " + existingPlaylist.getURL());
             }
         }
+        EmbedPlayer.getInstace().sendEmbed(event.getChannel().asTextChannel());
         event.reply("Searching: " + song).queue();
-        LOGGER.info("Searching: " + song);
+
+        logger.info("Searching: " + song);
 
     }
 

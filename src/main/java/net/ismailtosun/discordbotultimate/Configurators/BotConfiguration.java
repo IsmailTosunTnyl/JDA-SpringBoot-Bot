@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 
+import net.ismailtosun.discordbotultimate.AudioPlayer.EmbedPlayer;
 import net.ismailtosun.discordbotultimate.AudioPlayer.PlayerManager;
 import net.ismailtosun.discordbotultimate.Listeners.*;
 import net.ismailtosun.discordbotultimate.Repository.PlaylistRepository;
@@ -45,6 +46,9 @@ public class BotConfiguration {
         playerManager = new PlayerManager(messagingTemplate);
         this.tokenService = tokenService;
         this.soundPadFileService = soundPadFileService;
+
+        EmbedPlayer embedPlayer = EmbedPlayer.getInstace();
+        embedPlayer.setPlayerManager(playerManager);
 
     }
 

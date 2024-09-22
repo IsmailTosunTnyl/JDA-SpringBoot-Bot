@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
+import net.ismailtosun.discordbotultimate.AudioPlayer.EmbedPlayer;
 import net.ismailtosun.discordbotultimate.AudioPlayer.PlayerManager;
 import net.ismailtosun.discordbotultimate.Constants.ButtonConstants;
 import net.ismailtosun.discordbotultimate.Entity.Playlist;
@@ -49,8 +50,19 @@ public class ButtonCommandListener extends ListenerAdapter {
         switch (action) {
             case ButtonConstants.SHUFFLE:
                 playerManager.getGuildMusicManager(event.getGuild()).scheduler.shuffleQueue();
-                event.reply("Queue shuffled!").queue();
+                logger.info("Shuffled the queue");
+                event.deferEdit().queue();
                 break;
+            case ButtonConstants.STOP:
+                playerManager.getGuildMusicManager(event.getGuild()).audioPlayer.stopTrack();
+                event.reply("Stopped!").queue();
+                break;
+            case ButtonConstants.NEXT:
+                playerManager.getGuildMusicManager(event.getGuild()).scheduler.nextTrack();
+                logger.info("Next track is playing");
+                event.deferEdit().queue();
+                break;
+
             default:
                 break;
         }
@@ -66,14 +78,7 @@ public class ButtonCommandListener extends ListenerAdapter {
         }
         event.getGuild().getAudioManager().openAudioConnection(channel);
         playerManager.loadAndPlay(event.getGuild(), playlistURL, false, true);
-        MessageCreateBuilder messageCreateBuilder = new MessageCreateBuilder();
-
-        int songCount = playerManager.getGuildMusicManager(event.getGuild())
-                .scheduler.queue.size() + playlist.getTracks().length;
-        messageCreateBuilder.setEmbeds(new EmbedBuilder().setTitle(playlistName).setFooter("Added to queue")
-                .setDescription("Total songs in the queue: " + songCount).build());
-        messageCreateBuilder.addActionRow(Button.primary(ButtonConstants.ACTION + ButtonConstants.SEPERATOR
-                + ButtonConstants.SHUFFLE, "Shuffle").withEmoji(Emoji.fromUnicode("🔀")));
-        event.reply(messageCreateBuilder.build()).queue();
+        EmbedPlayer.getInstace().sendEmbed(event.getChannel().asTextChannel());
+        event.deferEdit().queue();
     }
 }
