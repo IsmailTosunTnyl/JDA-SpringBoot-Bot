@@ -64,6 +64,7 @@ public class BotConfiguration {
                                 , messagingTemplate
                                 , playlistRepository
                                 , tokenService),
+                        new ButtonCommandListener(playerManager, playlistRepository),
                         new UtilsCommandsManager(playlistRepository),
                         new SlashCommands(),
                         new SoundPadCommandManager(playerManager, soundPadFileService)
