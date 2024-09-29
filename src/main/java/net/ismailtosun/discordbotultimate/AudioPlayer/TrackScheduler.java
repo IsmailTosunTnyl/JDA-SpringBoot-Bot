@@ -47,12 +47,15 @@ public class TrackScheduler extends AudioEventAdapter {
     public void nextTrack() {
         if (queue.isEmpty()) {
             BotConfiguration.jda.getPresence().setActivity(Activity.playing("Leagues of Legends"));
+            // TODO send an empty embed message to the channel to clear the player
             return;
         }
         player.startTrack(queue.poll(), false);
         BotConfiguration.jda.getPresence().setActivity(Activity.customStatus("Playing: " + player.getPlayingTrack().getInfo().title));
-
         trackQueueUpdateService.updateQueue(queue);
+
+        // update embed player
+        EmbedPlayer.getInstace().updateEmbedPlayer();
     }
 
     @Override

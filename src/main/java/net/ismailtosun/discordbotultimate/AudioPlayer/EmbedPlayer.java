@@ -9,7 +9,6 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import net.dv8tion.jda.api.utils.messages.MessageEditBuilder;
 import net.ismailtosun.discordbotultimate.Constants.ButtonConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +19,7 @@ import java.util.regex.Pattern;
 
 public class EmbedPlayer {
     Logger logger = LoggerFactory.getLogger(EmbedPlayer.class);
-
+    private static final int EMBED_UPDATE_INTERVAL = 10000;
     public static EmbedPlayer getInstace() {
         if (embedPlayer == null) {
             embedPlayer = new EmbedPlayer();
@@ -86,50 +85,61 @@ public class EmbedPlayer {
             logger.warn("Text channel is null ***********");
             return;
         }
+        setTextChannel(textChannel);
         if (embed == null) {
             logger.warn("Embed is null");
             embed = new EmbedBuilder().setTitle("Getting Ready").build();
         }
-
-        setTextChannel(textChannel);
+        if (lastMessageId != null) {
+            try {
+                logger.info("Deleting last embed with id " + lastMessageId);
+                textChannel.deleteMessageById(lastMessageId).queue();
+            } catch (Exception e) {
+                logger.error(e.toString());
+            }
+        }
         textChannel.sendMessageEmbeds(embed).addActionRow(buttons).queue(message -> {
             setLastMessageId(message.getIdLong());
             logger.info("Embed id is set to " + message.getIdLong());
         });
     }
 
+    public boolean updateEmbedPlayer() {
+        if (textChannel == null) {
+            logger.warn("Text channel is null");
+            return false;
+        }
+        GuildMusicManager musicManager = playerManager.musicManagers.get(textChannel.getGuild().getIdLong());
+        if (musicManager != null && musicManager.audioPlayer.getPlayingTrack() != null) {
+            AudioTrack audioTrack = playerManager.musicManagers.get(textChannel.getGuild().getIdLong()).audioPlayer.getPlayingTrack();
+            if (audioTrack != null) {
+                this.embed = createEmbed(audioTrack);
+                if (lastMessageId != null) {
+                    textChannel.editMessageEmbedsById(lastMessageId, embed).queue();
+                } else {
+                    logger.warn("Message id is null");
+                    return false;
+                }
+            } else {
+                logger.warn("Audio track is null");
+                return false;
+            }
+        }
+        // player update is successful
+        return true;
+    }
 
-    // update periodically with threads
-    // update embed
 
-
+    // update embed player every EMBED_UPDATE_INTERVAL seconds
     private void startProgressUpdate() {
         Thread thread = new Thread(() -> {
             while (true) {
                 try {
-                    Thread.sleep(1000);
-                    if (textChannel == null) {
-                        Thread.sleep(2000);
-                        logger.warn("Text channel is null");
-                        continue;
+                    Thread.sleep(EMBED_UPDATE_INTERVAL);
+                    if (!updateEmbedPlayer()){
+                        logger.warn("Embed update failed");
+                        Thread.sleep(EMBED_UPDATE_INTERVAL);
                     }
-                    GuildMusicManager musicManager = playerManager.musicManagers.get(textChannel.getGuild().getIdLong());
-                    if (musicManager != null && musicManager.audioPlayer.getPlayingTrack() != null) {
-                        AudioTrack audioTrack = playerManager.musicManagers.get(textChannel.getGuild().getIdLong()).audioPlayer.getPlayingTrack();
-                        if (audioTrack != null) {
-                            this.embed = createEmbed(audioTrack);
-                            if (lastMessageId != null) {
-                                textChannel.editMessageEmbedsById(lastMessageId, embed).queue();
-                            } else {
-                                Thread.sleep(2000);
-                                logger.warn("Message id is null");
-                            }
-                        } else {
-                            Thread.sleep(5000);
-                            logger.warn("Audio track is null");
-                        }
-                    }
-
                 } catch (InterruptedException e) {
                     logger.error(e.toString());
                 }
